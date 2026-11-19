@@ -1,5 +1,8 @@
 # Frozen statement for owner review (2026-11-18)
 
+**Status: approved by the owner on 2026-11-19** ("Approve statements"), with no changes. The approved statements are
+the four theorems below, as they stand in `QZeta3/Final.lean` at commit 6318359.
+
 These are the only Lean statements whose meaning the kernel cannot check for you. Everything else (the internal
 construction `Rfun`, `cc`, `P0`, `P3`, `dn`, `Sn` and the six ingredients) is checked by the kernel against these.
 Files: `QZeta3/Final.lean` (theorems), `QZeta3/Defs.lean` (the three definitions they use).

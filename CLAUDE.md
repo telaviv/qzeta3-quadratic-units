@@ -16,5 +16,5 @@ Lean 4 + Mathlib (v4.35.0) formalisation of **Theorem T1**: √d·ζ_q(3) ∉ �
   `WORKER_BRIEFS.md`.
 * Lemma 7 uses the weak form Σφ(ℓ) ≤ 3(n+1)²/8 (sieve at 2), not 3/π². Any constant below 1/2 suffices.
 * Fidelity: a blind back-translation (`FIDELITY.md`) found no mismatch. Owner review of the statements:
-  `STATEMENT_REVIEW.md` (pending as of 2026-11-19).
+  `STATEMENT_REVIEW.md`, approved by the owner on 2026-11-19 with no changes.
 * Machine note: a cold `import Mathlib` was very slow on 2026-11-18 (over 5 min); warm it is about 1 min.
