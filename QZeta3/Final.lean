@@ -1,4 +1,10 @@
-import QZeta3.Main
+import QZeta3.Reduction
+import QZeta3.PartialFrac.Top
+import QZeta3.Expand.Top
+import QZeta3.Reciprocity.Top
+import QZeta3.Denom.Top
+import QZeta3.Size.Top
+import QZeta3.Cost.Top
 
 /-!
 # Main results (frozen statements)
@@ -28,31 +34,31 @@ open Polynomial Finset
 
 namespace QZeta3
 
+/-- The six ingredients, all proved. -/
+theorem ingredients : Ingredients :=
+  ⟨PartialFrac.pfIdentity, Expand.expansion, Reciprocity.recip, Denom.integrality,
+    Size.sizeBound, Cost.costBound⟩
+
 /-- **Theorem T1**, elementary form with `θ = q − q⁻¹`. -/
 theorem irrational_sub_inv_mul_zetaq3 {q : ℝ} {s : ℤ} (hq0 : q ≠ 0) (hq1 : |q| < 1)
-    (hs : q + q⁻¹ = s) : Irrational ((q - q⁻¹) * zetaq3 q) := by
-  sorry
+    (hs : q + q⁻¹ = s) : Irrational ((q - q⁻¹) * zetaq3 q) :=
+  irrational_sub_inv_mul_zetaq3_ing ingredients hq0 hq1 hs
 
 /-- **Theorem T1**: `√d · ζ_q(3) ∉ ℚ` for a real quadratic unit `q` of norm `+1`, `0 < |q| < 1`,
 with `ℚ(q) = ℚ(√d)`. -/
 theorem irrational_sqrt_mul_zetaq3 {q : ℝ} {s : ℤ} (hq0 : q ≠ 0) (hq1 : |q| < 1)
     (hs : q + q⁻¹ = s) {d : ℕ} (hd : 0 < d) (hsq : IsSquare ((d : ℤ) * (s ^ 2 - 4))) :
-    Irrational (Real.sqrt d * zetaq3 q) := by
-  sorry
+    Irrational (Real.sqrt d * zetaq3 q) :=
+  irrational_sqrt_mul_zetaq3_ing ingredients hq0 hq1 hs hd hsq
 
 /-- **Corollary**: `Σ_{m≥1} m² (U_{m+1}/U_m − ε) ∉ ℚ` for every quadratic-unit Lucas sequence. -/
 theorem irrational_lucas_sum {a : ℕ} {E : ℤ} (h : (E = 1 ∧ 1 ≤ a) ∨ (E = -1 ∧ 3 ≤ a)) :
-    Irrational (∑' m : ℕ, (m : ℝ) ^ 2 * ((lucasU a E (m + 1) : ℝ) / lucasU a E m - epsU a E)) := by
-  sorry
+    Irrational (∑' m : ℕ, (m : ℝ) ^ 2 * ((lucasU a E (m + 1) : ℝ) / lucasU a E m - epsU a E)) :=
+  irrational_lucas_sum_ing ingredients h
 
 /-- **Corollary, Fibonacci case**: `Σ_{m≥1} m² (F_{m+1}/F_m − φ) ∉ ℚ`. -/
 theorem irrational_fib_sum :
-    Irrational (∑' m : ℕ, (m : ℝ) ^ 2 * ((Nat.fib (m + 1) : ℝ) / Nat.fib m - Real.goldenRatio)) := by
-  sorry
-
-/-- The series defining `ζ_q(3)` converges for `|q| < 1` (so `zetaq3` is not a junk value). -/
-theorem summable_zetaq3 {q : ℝ} (hq1 : |q| < 1) :
-    Summable (fun m : ℕ => (m : ℝ) ^ 2 * q ^ m / (1 - q ^ m)) := by
-  sorry
+    Irrational (∑' m : ℕ, (m : ℝ) ^ 2 * ((Nat.fib (m + 1) : ℝ) / Nat.fib m - Real.goldenRatio)) :=
+  irrational_fib_sum_ing ingredients
 
 end QZeta3

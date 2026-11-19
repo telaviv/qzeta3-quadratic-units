@@ -1,2 +1,12 @@
 import QZeta3.Defs
 import QZeta3.Statements
+import QZeta3.Main
+import QZeta3.Corollary
+import QZeta3.Reduction
+import QZeta3.PartialFrac.Top
+import QZeta3.Expand.Top
+import QZeta3.Reciprocity.Top
+import QZeta3.Denom.Top
+import QZeta3.Size.Top
+import QZeta3.Cost.Top
+import QZeta3.Final

@@ -1,0 +1,11 @@
+lean_qzeta3
+Copyright 2026 Shawn Krisman. Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+QZeta3/Cost/Cyclo.lean is adapted from lean_lucasu (LucasU/Cost/Cyclo.lean), which generalises lean_fibzeta
+(FibZeta/Cost/Cyclo.lean), which in turn adapts the Lean formalisation QZeta3 in
+https://github.com/uplift-universal-inc/qzeta_3-irrationality (directory lean/, Apache License 2.0,
+Lean formalisation by F. Solomon Admasu, v0.1.0, 2026-10-11). The file says so in its header and states what was
+changed.
+
+Note: this project's library is also called QZeta3 (for the q-analogue of ζ(3)); it is a different formalisation
+(a different theorem: √d·ζ_q(3) ∉ ℚ at real quadratic units q of norm +1), not a fork of the uplift repository.
