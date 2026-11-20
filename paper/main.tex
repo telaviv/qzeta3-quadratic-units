@@ -1,0 +1,987 @@
+\documentclass[11pt]{amsart}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{alltt}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\numberwithin{equation}{section}
+\setlength{\emergencystretch}{2em}
+\raggedbottom
+
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\Nm}{\operatorname{N}}
+\newcommand{\eu}{\phi_{\mathrm E}}
+\newcommand{\Tot}{\mathcal T}
+\newcommand{\lean}[1]{{\def\_{\textunderscore\allowbreak}\texttt{#1}}}
+% Visible marker for open items. Every \TODO must be resolved (or the passage deleted) before posting.
+\newcommand{\TODO}[1]{\textbf{[TODO: #1]}}
+
+\begin{document}
+
+\hypersetup{pdftitle={Irrationality of odd q-zeta values at real quadratic units},pdfauthor={Shawn Krisman}}
+\title[Odd $q$-zeta values at real quadratic units]{Irrationality of odd $q$-zeta values at real quadratic units}
+
+\author{Shawn Krisman}
+
+\subjclass[2020]{Primary 11J72; Secondary 11B39, 11R11, 33D15, 68V20}
+\keywords{$q$-zeta values, Lambert series, real quadratic units, Lucas sequences, Fibonacci numbers, irrationality,
+basic hypergeometric series, Lean}
+
+\begin{abstract}
+For $|q|<1$ and odd $l\ge3$ let $\zeta_q(l)=\sum_{m\ge1}m^{l-1}q^m/(1-q^m)$. Let $q$ be a unit of norm $+1$ in a
+real quadratic field $\QQ(\sqrt d)$ with $0<|q|<1$. We prove that the dimension of the $\QQ$-vector space spanned by
+$1,\sqrt d\,\zeta_q(3),\sqrt d\,\zeta_q(5),\dots,\sqrt d\,\zeta_q(A-1)$ is at least $(\pi/\sqrt{12+\pi^2}+o(1))\sqrt A$,
+and that one of $\sqrt d\,\zeta_q(5),\dots,\sqrt d\,\zeta_q(11)$ lies outside $\QQ+\QQ\sqrt d\,\zeta_q(3)$; these
+seem to be the first results on odd $q$-zeta values of weight at least five at an algebraic irrational $q$. We also give
+an elementary proof that $\sqrt d\,\zeta_q(3)$ is irrational, formalised in Lean~4 with Mathlib using only the standard
+axioms. In particular, for a Lucas sequence $(U_m)$ of a real quadratic unit $\eta>1$,
+$\sum_{m\ge1}m^2(U_{m+1}/U_m-\eta)\notin\QQ$, for instance $\sum_{m\ge1}m^2(F_{m+1}/F_m-\varphi)\notin\QQ$. The proofs
+use the very-well-poised basic hypergeometric series of Krattenthaler, Rivoal and Zudilin, whose coefficients turn out
+to be invariant or anti-invariant under $q\mapsto1/q$, up to a power of $q$; at a unit with conjugate $1/q$ this makes suitable integer linear
+forms in the twisted values $\sqrt d\,\zeta_q(l)$ small at both archimedean places. A stronger form of the weight-three statement has been claimed concurrently and
+independently in unverified preprints.
+\end{abstract}
+
+\maketitle
+
+% ===========================================================================
+\section{Introduction}
+% ===========================================================================
+
+For a complex number $q$ with $|q|<1$ and an integer $l\ge1$ let
+\[
+\zeta_q(l)=\sum_{m\ge1}\frac{m^{l-1}q^m}{1-q^m}=\sum_{N\ge1}\sigma_{l-1}(N)\,q^N,
+\]
+the $q$-analogue of $\zeta(l)$ studied by Krattenthaler, Rivoal and Zudilin \cite{KRZ06}. For even $l$ these are, up to
+constants, Eisenstein series, and Nesterenko's theorem \cite{Nes96} shows that $\zeta_q(2m)$ is transcendental for
+every algebraic $q$ with $0<|q|<1$ (see \cite[Introduction]{JM10}). The odd values are much less understood. Let
+$q=1/p$ with $p\in\ZZ\setminus\{0,\pm1\}$. For $p\ge2$, $\zeta_q(1)$ is irrational \cite{Bor92}, and
+$1,\zeta_q(1),\zeta_q(2)$ are linearly independent over $\QQ$ \cite{PVA07}. For odd $l\ge3$ Krattenthaler, Rivoal and
+Zudilin proved that the dimension of the $\QQ$-span of $1,\zeta_q(3),\zeta_q(5),\dots,\zeta_q(A-1)$ grows at least like
+a constant times $\sqrt A$, and that one of $\zeta_q(3),\dots,\zeta_q(11)$ is irrational \cite{KRZ06}; Jouhet and
+Mosaki reduced this to one of $\zeta_q(3),\dots,\zeta_q(9)$ \cite{JM10}, and Fischler and Zudilin refined these results
+\cite{FZ10}. In October 2026 a proof that $\zeta_{1/p}(3)=\sum_{n\ge1}n^2/(p^n-1)$ is irrational for every integer
+$p\ge2$ was claimed in an unrefereed, AI-assisted research draft with a Lean formalisation, posted under the pen name
+uplift-universal-inc \cite{UPL,QZ3}.
+
+At algebraic irrational $q$, apart from the even weights, the known results are of weight one, for example for Lambert
+series $\sum_na_n/(b^n-1)$ with periodic coefficients $a_n$ at suitable algebraic integers $b$ with $|b|>1$ (Tachiya
+\cite{Tac04}, Bundschuh and V\"a\"an\"anen \cite{BV05}, Dixit, Kumar and Pathak \cite{DKP24}; see
+Section~\ref{sec:related}). Krattenthaler, Rivoal and Zudilin remark \cite[\S3.5]{KRZ06} that their theorems would extend to algebraic
+$q$, via Jadot's linear independence criterion over number fields \cite{Jad96}, if a conjectured asymptotic for the
+coefficients of their linear forms held. Bundschuh and Zudilin list the arithmetic of $\zeta_q(k)$ at reciprocals of
+Pisot and Salem numbers among their open problems \cite[\S6]{BZ07}. Before the concurrent work discussed below, we know
+of no result on $\zeta_q(3)$ at an algebraic irrational $q$, not even of ``one of'' type.
+
+A unit $q$ of a real quadratic field $K$ has norm $+1$ exactly when its Galois conjugate is $1/q$. Our results concern
+such $q$. Throughout, $K$ is a real quadratic field, $\sigma$ its nontrivial automorphism, $q\in\cO_K^\times$ a unit of
+norm $+1$ with $0<|q|<1$, so that $\sigma q=1/q$, and $d\ge1$ an integer with $K=\QQ(\sqrt d)$.
+
+\begin{theorem}\label{thm:many}
+For every even $A\ge4$ and every integer $r$ with $1\le r<A/2$,
+\[
+\dim_\QQ\bigl(\QQ+\QQ\sqrt d\,\zeta_q(3)+\QQ\sqrt d\,\zeta_q(5)+\dots+\QQ\sqrt d\,\zeta_q(A-1)\bigr)\ge1+\tau(A,r),
+\]
+where
+\[
+\tau(A,r)=\frac{4\pi^2r(A-2r)-12A}{12A+\pi^2(A+4r^2)}.
+\]
+In particular, as $A\to\infty$ through even integers, this dimension is at least $(\pi/\sqrt{12+\pi^2}+o(1))\sqrt A
+=(0.6717\ldots+o(1))\sqrt A$.
+\end{theorem}
+
+\begin{corollary}\label{cor:many}
+At least one of $\sqrt d\,\zeta_q(5)$, $\sqrt d\,\zeta_q(7)$, $\sqrt d\,\zeta_q(9)$, $\sqrt d\,\zeta_q(11)$ lies
+outside $\QQ+\QQ\sqrt d\,\zeta_q(3)$, and so is irrational. Infinitely many of the numbers $\sqrt d\,\zeta_q(l)$, $l$ odd,
+are irrational.
+\end{corollary}
+
+The corollary is the case $A=12$, $r=2$, where $1+\tau=2.16\ldots>2$. Theorem~\ref{thm:many} is not formalised. Its case
+$A=4$, $r=1$ gives $1+\tau=1.24\ldots>1$, that is, the following theorem, for which we give a separate, shorter proof that
+uses only an elementary bound for $\sum_{\ell\le n}\eu(\ell)$ and is formalised in Lean (Section~\ref{sec:lean}).
+
+\begin{theorem}\label{thm:main}
+$\sqrt d\,\zeta_q(3)$ is irrational.
+\end{theorem}
+
+Equivalently: if $q$ is a real number with $0<|q|<1$ and $s=q+q^{-1}\in\ZZ$, then $(q-q^{-1})\zeta_q(3)\notin\QQ$.
+Indeed, such $q$ is a root of $x^2-sx+1$ with $|s|\ge3$, so it is a quadratic unit of norm $1$, and $q-q^{-1}=
+\pm\sqrt{s^2-4}$ is a nonzero rational multiple of $\sqrt d$. Neither theorem says anything about the values
+$\zeta_q(l)$ themselves; see Remark~\ref{rem:plain}.
+
+For integers $P,Q$ let $U_m=U_m(P,Q)$ be the Lucas sequence $U_0=0$, $U_1=1$, $U_{m+1}=PU_m-QU_{m-1}$. Call $(P,Q)$
+\emph{admissible} if $Q=-1$ and $P\ge1$, or $Q=1$ and $P\ge3$. Then $D=P^2-4Q>0$ is not a square, $\eta=(P+\sqrt D)/2$
+is a unit of norm $Q$ of the order $\ZZ[\eta]$, $\eta>1$, and every unit $\eta>1$ of a real quadratic order arises in
+this way \cite[\S1]{Kri26b}. The Fibonacci numbers are $F_m=U_m(1,-1)$, with $\eta=\varphi=(1+\sqrt5)/2$, and the Pell
+numbers are $\mathcal P_m=U_m(2,-1)$, with $\eta=1+\sqrt2$.
+
+\begin{corollary}\label{cor:lucas}
+For every admissible $(P,Q)$, with $\eta=(P+\sqrt{P^2-4Q})/2$,
+\[
+\sum_{m\ge1}m^2\Bigl(\frac{U_{m+1}}{U_m}-\eta\Bigr)\notin\QQ.
+\]
+\end{corollary}
+
+\begin{corollary}\label{cor:fib}
+The numbers
+\[
+\sum_{m\ge1}m^2\Bigl(\frac{F_{m+1}}{F_m}-\varphi\Bigr)=\sum_{m\ge1}\frac{(-1)^mm^2}{\varphi^mF_m}
+\qquad\text{and}\qquad
+\sum_{m\ge1}m^2\Bigl(\frac{\mathcal P_{m+1}}{\mathcal P_m}-1-\sqrt2\Bigr)
+\]
+are irrational.
+\end{corollary}
+
+The ratios $U_{m+1}/U_m$ converge to $\eta$ geometrically, so the series converge absolutely. Corollary~\ref{cor:lucas}
+is Theorem~\ref{thm:main} at $q=\bar\eta/\eta=Q\eta^{-2}$, where $\bar\eta=Q/\eta$ (Section~\ref{sec:proof}). It
+covers only the units of the form $q=\pm\eta^{-2}$, so it is weaker than Theorem~\ref{thm:main}: for example $q=2-\sqrt3$ is not of
+this form, since the units of every order of $\QQ(\sqrt3)$ are $\pm(2+\sqrt3)^k$. In the same way,
+$\sum_{m\ge1}m^{l-1}(U_{m+1}/U_m-\eta)=\sqrt{P^2-4Q}\,\zeta_q(l)$ for every odd $l\ge3$, so Theorem~\ref{thm:many} and
+Corollary~\ref{cor:many} hold for these sums; for instance, one of $\sum_{m\ge1}m^{l-1}(F_{m+1}/F_m-\varphi)$,
+$l\in\{5,7,9,11\}$, is irrational.
+
+\subsection*{Concurrent work}
+While this work was being completed, the contributor twinheterodox submitted the Hexagon preprint \cite{Twi26}
+(submitted 18 November, published 19 November 2026). It is labelled by its author as primarily AI-generated, and its
+proof is not formally verified. It claims that $Z(b)=\sum_{n\ge1}n^2/(b^n-1)=\zeta_{1/b}(3)$ does not lie in $\QQ(b)$
+for every algebraic integer $b$ with $|b|>1$ all of whose conjugates outside the closed unit disk belong to
+$\{b,\bar b\}$; this includes all Pisot and Salem numbers. For $b=1/q$ with $q$ as in Theorem~\ref{thm:main}, this is
+the statement $\zeta_q(3)\notin K$, which is stronger than Theorem~\ref{thm:main}: it implies both
+$\sqrt d\,\zeta_q(3)\notin\QQ$ and $\zeta_q(3)\notin\QQ$, and the second does not follow from our method. A companion
+preprint by the same contributor \cite{Twi26b} claims that $1$ and the three numbers $\sum_{n\ge1}(b^n-1)^{-j}$,
+$j=1,2,3$, are linearly independent over $\QQ(b)$ for every algebraic integer $b$ with $|b|>1$ all of whose
+conjugates other than $b$ and $\bar b$ lie in the closed unit disk (by its abstract, a slightly different wording of the
+same class); since
+$\zeta_{1/b}(3)=M_1+3M_2+2M_3$ with $M_j=\sum_{n\ge1}(b^n-1)^{-j}$ (expand $(b^n-1)^{-j}$ in powers of $b^{-n}$ and use
+$k^2=2\binom{k-1}2+3(k-1)+1$), this also contains Theorem~\ref{thm:main}, as $b=1/q$ is in that class. The proof in \cite{Twi26} builds on
+the moving-denominator Hankel construction of \cite{UPL}. We have not checked their arguments, and our work is independent of
+them, and we claim no priority for Theorem~\ref{thm:main}. Relative to \cite{Twi26,Twi26b}, the contributions of the
+present paper are:
+\begin{itemize}
+\item Theorem~\ref{thm:many} and Corollary~\ref{cor:many}, which concern weights above three, where the claims of
+\cite{Twi26,Twi26b} say nothing;
+\item an independent proof of Theorem~\ref{thm:main}, which is elementary and short: it uses no estimate on the
+coefficients of the linear forms and no input from analytic number theory;
+\item a complete formal verification of Theorem~\ref{thm:main} and Corollaries~\ref{cor:lucas} and~\ref{cor:fib} in
+Lean~4 with Mathlib, using only the standard axioms (Section~\ref{sec:lean});
+\item the Lucas-sequence form of these results; for Theorem~\ref{thm:main} it follows equally from \cite{Twi26}.
+\end{itemize}
+
+\subsection*{The method}
+We use a variant of the very-well-poised basic hypergeometric series of \cite[\S3]{KRZ06} (with weight $T^e$ instead of
+$T^{e+1}$, summed bilaterally), in the case $A=4$, $r=1$. For each $n$ it gives a linear form $S_n(q)=P_0(q)+P_3(q)\zeta_q(3)$ with $P_0,P_3\in\QQ(q)$
+(Lemma~\ref{lem:expansion}). The new observation is a reciprocity under $q\mapsto1/q$ (Lemma~\ref{lem:recip}):
+\[
+P_3(1/q)=q^{-n}P_3(q),\qquad P_0(1/q)=-q^{-n}P_0(q).
+\]
+At a unit with $\sigma q=1/q$, suppose that $\zeta_q(3)\in\QQ\sqrt d$. Then $S_n\in K$, and Galois conjugation gives
+$\sigma(S_n)=-q^{-n}S_n$, so the linear form is small at both archimedean places of $K$, and the product formula gives a contradiction: after clearing the cyclotomic
+denominators $d_n(q)^4$ (Lemma~\ref{lem:den}), the norm is about
+\[
+|\Nm d_n(q)|^4\,|S_n(q)|^2\le|q|^{-(\frac32-2+o(1))n^2},
+\]
+since $\log|S_n|\sim-n^2\log(1/|q|)$ (Lemma~\ref{lem:size}) and $\log|\Nm d_n(q)|\le(\frac38+o(1))n^2\log(1/|q|)$
+(Lemma~\ref{lem:cost}). No upper bound on the coefficients $P_0,P_3$ is needed. The same construction gives nothing
+for $\zeta_q(3)$ itself (Remark~\ref{rem:plain}), nor for the Fibonacci zeta value $\sum_mF_m^{-3}$
+(Remark~\ref{rem:fibzeta}). Our earlier proofs that $\sum_mF_m^{-3}$ and $\sum_mU_m^{-3}$ are irrational
+\cite{Kri26a,Kri26b} used a different construction, moving-denominator Hankel determinants.
+
+For Theorem~\ref{thm:many} we take general $(A,r)$, where $S_n=P_0+\sum_lP_l\zeta_q(l)$ involves the odd weights
+$3\le l\le A-1$. The same reciprocity shows that the integer forms
+$\operatorname{Tr}_{K/\QQ}(\delta P_0)+\sum_l\operatorname{Tr}_{K/\QQ}(\delta P_l/\sqrt d)\,\sqrt d\,\zeta_q(l)$, for a
+suitable denominator $\delta\in\cO_K$, equal $(\delta-q^{-e}\sigma\delta)S_n$. Multiplying $\delta$ by a power of the
+unit $q$ splits the cost of the denominator evenly between the two real places, a standard balancing step, and
+Nesterenko's linear independence criterion then gives Theorem~\ref{thm:many}. Here we need upper bounds for the
+coefficients, as in \cite{KRZ06}, and the asymptotic $\sum_{\ell\le n}\eu(\ell)\sim3n^2/\pi^2$. With the same leading
+constants (decay, coefficient size and denominator, which our variant of the series shares with that of \cite{KRZ06})
+and the same single-form criterion, the bound $1+\tau(A,r)$ is exactly twice the bound that Krattenthaler, Rivoal and
+Zudilin obtain at $q=1/p$ (Remark~\ref{rem:balance}); this compares one method at two kinds of $q$, not with the best results known at $q=1/p$, which are better than those of \cite{KRZ06}
+\cite{JM10,FZ10}.
+
+Sections~\ref{sec:R}--\ref{sec:size} hold for every even $A\ge4$ and every $1\le r<A/2$; only
+Sections~\ref{sec:cost}--\ref{sec:proof} specialise to $A=4$, $r=1$, and Section~\ref{sec:many} returns to general
+$(A,r)$. The identities of Section~\ref{sec:R} are those of \cite{KRZ06} in our normalisation; we give proofs to keep
+the paper self-contained.
+
+\subsection*{Formal verification}
+Theorem~\ref{thm:main}, Corollaries~\ref{cor:lucas} and~\ref{cor:fib}, and every step of their proofs (for $A=4$,
+$r=1$) are formalised in Lean~4 with Mathlib (\TODO{public repository URL}; Section~\ref{sec:lean}).
+Theorem~\ref{thm:many} and Corollary~\ref{cor:many} are not formalised.
+
+% ===========================================================================
+\section{The rational function and its symmetries}\label{sec:R}
+% ===========================================================================
+
+Write $(x;q)_m=\prod_{i=0}^{m-1}(1-xq^i)$. Fix an even integer $A\ge4$ and an integer $r$ with $1\le r<A/2$, and put
+$e=(A-2r)n/2\in\ZZ$. For $n\ge1$ let
+\begin{equation}\label{eq:R}
+R(T)=R_n(T;q)=\frac{(q;q)_n^{A-2r}\,(q^{-rn}T;q)_{rn}\,(q^{n+1}T;q)_{rn}\,T^e}{(T;q)_{n+1}^A},
+\end{equation}
+a rational function of $T$ over the field $\QQ(q)$, $q$ an indeterminate. This is the rational function $R_n(T;q)$ of
+\cite[\S3.3]{KRZ06} without its factor $q^{-(A-2r)n/4}$. Krattenthaler, Rivoal and Zudilin sum $q^kR_n(q^k)$; we sum
+$R_n(q^k)$. Its numerator has degree $2rn+e=(A+2r)n/2<A(n+1)$ in $T$, so $R$ is proper.
+
+\begin{lemma}[well-poised symmetry]\label{lem:wp}
+$R(q^{-n}/T)=q^{An/2}\,T^A\,R(T)$.
+\end{lemma}
+
+\begin{proof}
+Substitute $T\mapsto q^{-n}/T$. The factors $(T;q)_{n+1}$, $(q^{-rn}T;q)_{rn}$ and $(q^{n+1}T;q)_{rn}$ become
+$\prod_{i=0}^n(1-q^{i-n}/T)$, $\prod_{m=n+1}^{n+rn}(1-q^{-m}/T)$ and $\prod_{m=1}^{rn}(1-q^{m}/T)$. Taking out of each
+linear factor its term in $1/T$ gives
+\begin{align*}
+(T;q)_{n+1}&\mapsto(-1)^{n+1}q^{-n(n+1)/2}\,T^{-(n+1)}\,(T;q)_{n+1},\\
+(q^{-rn}T;q)_{rn}&\mapsto(-1)^{rn}q^{-rn^2-rn(rn+1)/2}\,T^{-rn}\,(q^{n+1}T;q)_{rn},\\
+(q^{n+1}T;q)_{rn}&\mapsto(-1)^{rn}q^{rn(rn+1)/2}\,T^{-rn}\,(q^{-rn}T;q)_{rn},\\
+T^e&\mapsto q^{-ne}\,T^{-e}.
+\end{align*}
+The two numerator blocks trade places. Relative to $R(T)$, the power of $T$ is $A(n+1)-2rn-2e=A$, the sign is
+$(-1)^{2rn+A(n+1)}=1$, and the power of $q$ is $-rn^2-ne+An(n+1)/2=An/2$.
+\end{proof}
+
+\begin{lemma}[$q\mapsto1/q$]\label{lem:inv}
+$R(T;1/q)=q^{-e}\,R(q^{-n}T;q)$.
+\end{lemma}
+
+\begin{proof}
+First, $R(1/V;1/q)=q^{rn}V^AR(V;q)$. The computation is of the same kind:
+\begin{align*}
+(1/q;1/q)_n&=(-1)^nq^{-n(n+1)/2}\,(q;q)_n,\\
+(V^{-1};1/q)_{n+1}&=(-1)^{n+1}q^{-n(n+1)/2}\,V^{-(n+1)}\,(V;q)_{n+1},\\
+(q^{rn}V^{-1};1/q)_{rn}&=(-1)^{rn}q^{rn(rn+1)/2}\,V^{-rn}\,(q^{-rn}V;q)_{rn},\\
+(q^{-n-1}V^{-1};1/q)_{rn}&=(-1)^{rn}q^{-rn^2-rn(rn+1)/2}\,V^{-rn}\,(q^{n+1}V;q)_{rn}.
+\end{align*}
+The total power of $q$ is $-(A-2r)n(n+1)/2-rn^2+An(n+1)/2=rn$, the power of $V$ is $A$ and the sign is $+1$. By
+Lemma~\ref{lem:wp} with $T=q^{-n}V$, $R(1/V;q)=q^{-An/2}V^AR(q^{-n}V;q)$. Hence
+$R(V;1/q)=q^{rn}V^{-A}R(1/V;q)=q^{rn-An/2}R(q^{-n}V;q)$, and $rn-An/2=-e$.
+\end{proof}
+
+% ===========================================================================
+\section{Partial fractions and denominators}\label{sec:pf}
+% ===========================================================================
+
+Since $R$ is proper, with poles only at $T=q^{-j}$, $0\le j\le n$, each of order at most $A$,
+\begin{equation}\label{eq:pf}
+R(T)=\sum_{j=0}^n\sum_{s=1}^A\frac{c_{s,j}(q)}{(1-q^jT)^s},\qquad c_{s,j}\in\QQ(q),
+\end{equation}
+and $\sum_{s,j}c_{s,j}=R(0)=0$, because $e\ge1$.
+
+\begin{corollary}\label{cor:cinv}
+$c_{s,j}(1/q)=q^{-e}c_{s,n-j}(q)$ for all $s,j$.
+\end{corollary}
+
+\begin{proof}
+Apply the automorphism $q\mapsto1/q$ of $\QQ(q)$ to \eqref{eq:pf}: this gives the partial fractions of $R(T;1/q)$, with
+poles at $T=q^j$. By Lemma~\ref{lem:inv} and \eqref{eq:pf}, $R(T;1/q)=q^{-e}\sum_{s,j'}c_{s,j'}(q)(1-q^{j'-n}T)^{-s}$.
+Partial fractions are unique, and the pole $q^j$ corresponds to $j'=n-j$.
+\end{proof}
+
+Let $\Phi_\ell$ be the $\ell$-th cyclotomic polynomial and $d_n(q)=\prod_{\ell=1}^n\Phi_\ell(q)$. For $1\le m\le n$,
+$1-q^m=-\prod_{\ell\mid m}\Phi_\ell(q)$ divides $d_n(q)$ in $\ZZ[q,q^{-1}]$, and so does $1-q^{-m}=-q^{-m}(1-q^m)$.
+
+\begin{lemma}[denominators]\label{lem:den}
+$d_n(q)^{A-s}\,c_{s,j}(q)\in\ZZ[q,q^{-1}]$ for all $1\le s\le A$ and $0\le j\le n$.
+\end{lemma}
+
+\begin{proof}
+Since
+\[
+(q^{-rn}T;q)_{rn}=\prod_{\rho=1}^r(q^{-\rho n}T;q)_n\quad\text{and}\quad
+(q^{n+1}T;q)_{rn}=\prod_{\rho=0}^{r-1}(q^{n+1+\rho n}T;q)_n,
+\]
+we can write $R(T)=T^e\prod_{i=1}^Af_i(T)$, where each $f_i$ is one of
+\begin{itemize}
+\item $(q;q)_n/(T;q)_{n+1}$ ($A-2r$ times);
+\item $(q^hT;q)_n/(T;q)_{n+1}$ with $h=-\rho n$, $1\le\rho\le r$;
+\item $(q^hT;q)_n/(T;q)_{n+1}$ with $h=n+1+\rho n$, $0\le\rho\le r-1$.
+\end{itemize}
+Each $f_i=N_i/(T;q)_{n+1}$ is proper with simple poles, so
+\[
+f_i(T)=\sum_{j'=0}^n\frac{a_{i,j'}}{1-q^{j'}T},\qquad a_{i,j'}=\frac{N_i(q^{-j'})}{\prod_{i'\ne j'}(1-q^{i'-j'})},
+\]
+where $i'$ runs over $0\le i'\le n$, and
+\[
+\prod_{i'\ne j'}(1-q^{i'-j'})=\pm q^{-j'(j'+1)/2}(q;q)_{j'}(q;q)_{n-j'}.
+\]
+Hence $a_{i,j'}=\pm q^{j'(j'+1)/2}\binom n{j'}_qN_i(q^{-j'})/(q;q)_n$, where $\binom n{j'}_q\in\ZZ[q]$ is the
+Gaussian binomial coefficient. For the first type $N_i/(q;q)_n=1$. For the other two, $N_i(q^{-j'})=(q^b;q)_n$ with
+$b=h-j'$; for the second type $b\le-n$, for the third $b\ge1$. If $b\ge1$, $(q^b;q)_n/(q;q)_n=\binom{b+n-1}n_q$; if
+$b\le-n$, then $(q^b;q)_n=\pm q^{-N}(q^{c};q)_n$ with $c=1-b-n\ge1$ and some integer $N$, and the quotient is again
+$\pm q^{-N}$ times a Gaussian binomial coefficient. So every $a_{i,j'}$ lies in $\ZZ[q,q^{-1}]$.
+
+Fix $j$ and put $u=1-q^jT$, so $T=q^{-j}(1-u)$. Then $T^e=q^{-je}(1-u)^e$ has coefficients in $\ZZ[q^{\pm1}]$ as a
+polynomial in $u$, and
+\[
+(1-q^jT)f_i(T)=a_{i,j}+u\sum_{j'\ne j}\frac{a_{i,j'}}{\alpha_{j'}+q^{j'-j}u},\qquad\alpha_{j'}=1-q^{j'-j}.
+\]
+The coefficient of $u^M$, $M\ge1$, in this power series is
+\[
+\sum_{j'\ne j}a_{i,j'}\,(-q^{j'-j})^{M-1}\,\alpha_{j'}^{-M}.
+\]
+Each $\alpha_{j'}$ is $1-q^{\pm m}$ with $1\le m\le n$, so $d_n(q)^M$ times this coefficient lies in $\ZZ[q^{\pm1}]$.
+Finally $c_{s,j}$ is the coefficient of $u^{A-s}$ in $u^AR=T^e\prod_i(1-q^jT)f_i(T)$. Distributing the $u$-degree
+$A-s$ over the factors, with degree $M_i$ on the factor $(1-q^jT)f_i$ and $\sum_iM_i\le A-s$, gives
+$d_n^{A-s}c_{s,j}\in\ZZ[q^{\pm1}]$: the constant terms $a_{i,j}$ ($M_i=0$) and the coefficients of $T^e$ need no
+denominator, and a factor with $M_i\ge1$ needs at most $d_n^{M_i}$.
+\end{proof}
+
+% ===========================================================================
+\section{The linear forms}\label{sec:forms}
+% ===========================================================================
+
+From now on $q$ also denotes a complex number with $0<|q|<1$. The identities of Sections~\ref{sec:R}
+and~\ref{sec:pf}, and those of Section~\ref{sec:recip} below, take place in the ring
+$\QQ[q,q^{-1},d_n(q)^{-1}]$ (by Lemma~\ref{lem:den}, and since $1-q^{\pm m}$ divides $d_n(q)$ for $m\le n$), or in the
+ring of rational functions of $T$ over it. Since every root of $d_n$ is a root of unity, evaluation at a number $q$ with
+$q\ne0$ and $|q|\ne1$ is a ring homomorphism of $\QQ[q,q^{-1},d_n(q)^{-1}]$ to $\CC$. This ring is stable under
+$q\mapsto1/q$, because $\Phi_1(1/q)=-q^{-1}\Phi_1(q)$ and $\Phi_\ell(1/q)=q^{-\eu(\ell)}\Phi_\ell(q)$ for $\ell\ge2$,
+and the value at $q$ of $f(1/q)$ is the value of $f$ at $1/q$. So all these identities, including those relating
+$f(1/q)$ and $f(q)$, may be
+evaluated at such $q$. Define
+\[
+S_n(q)=\sum_{k\ge1}R(q^k)-\sum_{k\ge1}R(q^{-n-k}).
+\]
+No argument is a pole. By Lemma~\ref{lem:wp}, $R(q^{-n-k})=q^{A(n/2+k)}R(q^k)$, and $R(q^k)=O(|q|^{ke})$, so both
+sums converge absolutely.
+
+Put $C_s(x)=\binom{x+s-1}{s-1}\in\QQ[x]$ and $\mathcal Q(x)=\sum_{s,j}c_{s,j}C_s(x)=\sum_{\lambda}\mathcal
+Q_\lambda x^\lambda$, a polynomial of degree at most $A-1$.
+
+\begin{lemma}[expansion]\label{lem:expansion}
+For $0<|q|<1$,
+\[
+S_n(q)=P_0(q)+\sum_{\substack{3\le l\le A-1\\ l\text{ odd}}}P_l(q)\,\zeta_q(l),
+\]
+where $P_l=2\mathcal Q_{l-1}$ and
+\[
+P_0=-\sum_{s,j}c_{s,j}W_{s,j},\qquad W_{s,j}=\sum_{m=1}^j\bigl((1-q^m)^{-s}-1\bigr)-\sum_{m=1}^{n-j}(1-q^{-m})^{-s}.
+\]
+\end{lemma}
+
+\begin{proof}
+\emph{Positive side.} Since $\sum_{s,j}c_{s,j}=0$, $R(q^k)=\sum_{s,j}c_{s,j}\bigl[(1-q^{j+k})^{-s}-1\bigr]$. Summing over
+$k\ge1$ and using
+\[
+\sum_{m\ge1}\bigl[(1-q^m)^{-s}-1\bigr]=\sum_{m\ge1}\sum_{i\ge1}C_s(i)q^{mi}=\sum_{i\ge1}C_s(i)\frac{q^i}{1-q^i},
+\]
+we get $\sum_{k\ge1}R(q^k)=\sum_{i\ge1}\mathcal Q(i)\frac{q^i}{1-q^i}-\sum_{s,j}c_{s,j}\sum_{m=1}^j\bigl((1-q^m)^{-s}
+-1\bigr)$.
+
+\emph{Negative side.} We have
+\[
+\sum_{k\ge1}(1-q^{j-n-k})^{-s}=\sum_{m\ge1}(1-q^{-m})^{-s}-\sum_{m=1}^{n-j}(1-q^{-m})^{-s}.
+\]
+Moreover $(1-q^{-m})^{-s}=(-1)^sq^{ms}(1-q^m)^{-s}=(-1)^s\sum_{i\ge s}\binom{i-1}{s-1}q^{mi}$, and
+$(-1)^s\binom{i-1}{s-1}=-C_s(-i)$; both sides vanish for $1\le i<s$. Hence
+$\sum_{m\ge1}(1-q^{-m})^{-s}=-\sum_{i\ge1}C_s(-i)\frac{q^i}{1-q^i}$ and
+\[
+\sum_{k\ge1}R(q^{-n-k})=-\sum_{i\ge1}\mathcal Q(-i)\frac{q^i}{1-q^i}-\sum_{s,j}c_{s,j}\sum_{m=1}^{n-j}(1-q^{-m})^{-s}.
+\]
+
+\emph{Difference.} The $q$-zeta part of $S_n$ is
+\[
+\sum_{i\ge1}\bigl[\mathcal Q(i)+\mathcal Q(-i)\bigr]\frac{q^i}{1-q^i}=\sum_{\lambda\text{ even}}2\mathcal
+Q_\lambda\,\zeta_q(\lambda+1).
+\]
+Here $\mathcal Q_0=\mathcal Q(0)=\sum_{s,j}c_{s,j}=0$,
+and $\lambda\le A-2$ since $\lambda$ is even and at most $A-1$. All rearrangements are of absolutely convergent double
+series.
+\end{proof}
+
+The values $\zeta_q(l)$ of even weight are absent from $S_n$: the minus sign between the two sums keeps only the even
+part of $\mathcal Q$.
+
+\begin{remark}
+Not used below. Put $S_n^+(q)=\sum_{k\ge1}R(q^k;q)$. By Lemma~\ref{lem:inv}, $R(q^{-n-i};q)=q^eR(q^{-i};1/q)$, so
+$S_n=S_n^+(q)-q^eS_n^+(1/q)$, where $S_n^+(1/q)$ means $\sum_{i\ge1}R(q^{-i};1/q)$. The combination $S_n^{[1]}$ of
+\cite[\S3]{KRZ06} has the same shape, but is built from $TR(T)$ in place of $R(T)$; it is not a constant multiple of
+our $S_n$.
+\end{remark}
+
+% ===========================================================================
+\section{Reciprocity}\label{sec:recip}
+% ===========================================================================
+
+\begin{lemma}\label{lem:recip}
+As elements of $\QQ(q)$: $P_l(1/q)=q^{-e}P_l(q)$ for odd $l\ge3$, but $P_0(1/q)=-q^{-e}P_0(q)$.
+\end{lemma}
+
+\begin{proof}
+By Corollary~\ref{cor:cinv},
+\[
+\mathcal Q(x;1/q)=\sum_{s,j}c_{s,j}(1/q)C_s(x)=q^{-e}\sum_{s,j}c_{s,n-j}(q)C_s(x)=q^{-e}\mathcal Q(x;q),
+\]
+which gives the first claim. For $P_0$: $W_{s,n-j}$ evaluated at $1/q$ is
+\[
+\sum_{m=1}^{n-j}\bigl((1-q^{-m})^{-s}-1\bigr)-\sum_{m=1}^j(1-q^m)^{-s}=-W_{s,j}(q)-n.
+\]
+Hence, reindexing $j\mapsto n-j$ and using Corollary~\ref{cor:cinv},
+\begin{align*}
+P_0(1/q)&=-\sum_{s,j}c_{s,n-j}(1/q)\,W_{s,n-j}(1/q)\\
+&=-q^{-e}\sum_{s,j}c_{s,j}(q)\bigl(-W_{s,j}(q)-n\bigr)=-q^{-e}P_0(q),
+\end{align*}
+using $\sum_{s,j}c_{s,j}=0$ once more.
+\end{proof}
+
+\begin{remark}
+Heuristically, $q\mapsto1/q$ sends $\zeta_q(l)$ to $-\zeta_q(l)-\zeta(1-l)$, and $\zeta(1-l)=0$ for odd $l\ge3$: so
+$S_n$ behaves like an eigenvector of $q\mapsto1/q$ if the $q$-zeta values are treated as anti-invariant. At a unit with
+$\sigma q=1/q$, Galois conjugation realises this for the numbers $X$ with $\sigma X=-X$, that is, for $X\in\QQ\sqrt d$.
+This remark is not used in the proofs.
+\end{remark}
+
+% ===========================================================================
+\section{Size and nonvanishing}\label{sec:size}
+% ===========================================================================
+
+\begin{lemma}\label{lem:size}
+Fix $q$ with $0<|q|<1$. For all sufficiently large $n$, $S_n(q)\ne0$ and
+\[
+\log|S_n(q)|=-(rn+1)e\log(1/|q|)+O_q(1);
+\]
+in particular $\log|S_n(q)|=-\frac12r(A-2r)\,n^2\log(1/|q|)+O_q(n)$.
+\end{lemma}
+
+\begin{proof}
+Let $\kappa=|q|$, $c_-=\prod_{i\ge1}(1-\kappa^i)>0$ and $c_+=\prod_{i\ge1}(1+\kappa^i)$. For $a\ge1$ and $m\ge0$,
+$c_-\le|(q^a;q)_m|\le c_+$. For $1\le k\le rn$, $R(q^k)=0$, because $(q^{k-rn};q)_{rn}$ contains the factor $1-q^0$.
+For $k\ge rn+1$ every $q$-Pochhammer symbol in $R(q^k)$ has base $q^a$ with $a\ge1$; there are $A-2r+2\le A$ of them in
+the numerator and $A$ in the denominator, so $C^{-1}\kappa^{ke}\le|R(q^k)|\le C\kappa^{ke}$ with $C=(c_+/c_-)^{2A}$,
+a constant depending only on $\kappa$ and $A$.
+By Lemma~\ref{lem:wp},
+\[
+S_n=\sum_{k\ge rn+1}\bigl(1-q^{A(n/2+k)}\bigr)R(q^k),
+\]
+and $|1-q^{A(n/2+k)}|\in[\frac12,2]$ for these $k$ once $n$ is large. So
+\[
+\bigl|S_n-(1-q^{A(n/2+rn+1)})R(q^{rn+1})\bigr|\le\frac{2C\kappa^{(rn+2)e}}{1-\kappa^e},
+\]
+while
+\[
+\bigl|(1-q^{A(n/2+rn+1)})R(q^{rn+1})\bigr|\ge\frac{\kappa^{(rn+1)e}}{2C}.
+\]
+The ratio of the two bounds is $4C^2\kappa^e/(1-\kappa^e)\to0$, since $e\to\infty$. Hence $|S_n|$ lies between
+$\kappa^{(rn+1)e}/(4C)$ and $4C\kappa^{(rn+1)e}$ for large $n$.
+\end{proof}
+
+Krattenthaler, Rivoal and Zudilin obtain the analogous limit for their series by a saddle-point argument
+\cite{KRZ06}; we do not need it.
+
+% ===========================================================================
+\section{Cyclotomic norms at a unit}\label{sec:cost}
+% ===========================================================================
+
+From now on $q$ is as in Theorem~\ref{thm:main}, and $\kappa=|q|$. Since $d_n$ has integer coefficients and
+$\sigma q=1/q$, the norm of $d_n(q)$ is $\Nm d_n(q)=d_n(q)\,d_n(1/q)$. Write $\eu$ for Euler's function (the letter $\varphi$ denotes the golden ratio) and
+$\Tot(n)=\sum_{\ell\le n}\eu(\ell)$.
+
+\begin{lemma}\label{lem:cost}
+With $B=\sum_{a\ge1}-\log(1-\kappa^a)<\infty$,
+\[
+\bigl|\log|\Nm d_n(q)|-\Tot(n)\log(1/\kappa)\bigr|\le2Bn,\qquad\text{and}\qquad\Tot(n)\le\tfrac38(n+1)^2.
+\]
+\end{lemma}
+
+\begin{proof}
+From $\Phi_\ell(x)=\prod_{a\mid\ell}(x^a-1)^{\mu(\ell/a)}$ and $\sum_{a\mid\ell}a\,\mu(\ell/a)=\eu(\ell)$,
+\[
+|\Phi_\ell(q)\Phi_\ell(1/q)|=\kappa^{-\eu(\ell)}\prod_{a\mid\ell}|1-q^a|^{2\mu(\ell/a)}.
+\]
+Since $1-\kappa^a\le|1-q^a|\le1+\kappa^a$, we have $|\log|1-q^a||\le-\log(1-\kappa^a)$, so
+$|\log|\Nm\Phi_\ell(q)|-\eu(\ell)\log(1/\kappa)|\le2B$. Sum over $\ell\le n$.
+
+For the second claim, $\eu(\ell)\le\ell$ for odd $\ell$, and $\eu(2m)\le m$ (if $m$ is odd, $\eu(2m)=\eu(m)\le m$; if
+$m$ is even, $\eu(2m)=2\eu(m)\le m$). Hence
+\[
+\Tot(n)\le\sum_{\substack{\ell\le n\\ \ell\text{ odd}}}\ell+\sum_{m\le n/2}m\le\frac{(n+1)^2}4+\frac{n(n+2)}8
+=\frac{3n^2+6n+2}8\le\frac38(n+1)^2.\qedhere
+\]
+\end{proof}
+
+\begin{remark}\label{rem:mertens}
+By the classical asymptotic $\Tot(n)=3n^2/\pi^2+O(n\log n)$ \cite[Theorem~330]{HW08}, Lemma~\ref{lem:cost} gives
+$\log|\Nm d_n(q)|=(3/\pi^2)n^2\log(1/\kappa)+O(n\log n)$. The proof below only needs $\Tot(n)\le cn^2+O(n)$ for some
+$c<\frac12$; the trivial bound $\Tot(n)\le n(n+1)/2$ would not suffice.
+\end{remark}
+
+% ===========================================================================
+\section{Proof of the main results}\label{sec:proof}
+% ===========================================================================
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Take $A=4$ and $r=1$, so $e=n$. By Lemma~\ref{lem:expansion}, $S_n=P_0+P_3\zeta_q(3)$, and since $[x^2]C_3=\frac12$,
+$[x^2]C_4=1$ and $C_1,C_2$ have degree less than $2$,
+\[
+P_3=2\mathcal Q_2=\sum_{j=0}^n(c_{3,j}+2c_{4,j}).
+\]
+By Lemma~\ref{lem:den}, $d_n(q)P_3\in\ZZ[q^{\pm1}]$. Also $d_n(q)^sW_{s,j}\in\ZZ[q^{\pm1}]$, because $1-q^{\pm m}$
+divides $d_n(q)$ for $m\le n$; with Lemma~\ref{lem:den} this gives $d_n(q)^4P_0\in\ZZ[q^{\pm1}]$. Put
+$\delta_n=d_n(q)^4$. Since $q$ is a unit, $\ZZ[q^{\pm1}]\subset\cO_K$, so $\delta_nP_0$ and $\delta_nP_3$ are
+values at $q$ of Laurent polynomials with integer coefficients, and lie in $\cO_K$.
+
+Let $\theta\in\cO_K$ be nonzero with $\sigma\theta=-\theta$; then $\theta^2$ is a nonzero rational integer. We show
+that $\theta\zeta_q(3)\notin\QQ$; the theorem follows with $\theta=\sqrt d$. Suppose $\theta\zeta_q(3)=a/b$ with
+$a,b\in\ZZ$, $b\ge1$. Then $\zeta_q(3)=a\theta/(b\theta^2)$ and
+\[
+y_n:=b\theta^2\,\delta_nS_n=b\theta^2\,\delta_nP_0+a\theta\,\delta_nP_3\in\cO_K.
+\]
+For large $n$, $y_n\ne0$ by Lemma~\ref{lem:size}, since $d_n(q)\ne0$. Apply $\sigma$. For a Laurent polynomial $f$ with
+integer coefficients, $\sigma(f(q))=f(1/q)$; with Lemma~\ref{lem:recip}, evaluated at $q$ as explained in
+Section~\ref{sec:forms}, and $\sigma\theta=-\theta$,
+\[
+\sigma(y_n)=d_n(1/q)^4\bigl[b\theta^2\cdot(-q^{-n}P_0)-a\theta\cdot q^{-n}P_3\bigr]=-q^{-n}\,d_n(1/q)^4\,b\theta^2\,S_n.
+\]
+Hence
+\[
+|\Nm y_n|=|y_n\,\sigma(y_n)|=b^2\theta^4\,\kappa^{-n}\,|\Nm d_n(q)|^4\,|S_n|^2.
+\]
+By Lemmas~\ref{lem:size} and~\ref{lem:cost},
+\[
+\log|\Nm y_n|\le\Bigl(4\cdot\frac38-2\Bigr)n^2\log(1/\kappa)+O_q(n)=-\frac12\,n^2\log(1/\kappa)+O_q(n),
+\]
+which is negative for large $n$. This contradicts $0\ne y_n\in\cO_K$, for which $|\Nm y_n|\ge1$.
+\end{proof}
+
+\begin{remark}
+With Remark~\ref{rem:mertens} in place of the elementary bound, the exponent is $12/\pi^2-2=-0.7841\ldots$. Numerically,
+with the exact integer $\Nm d_n(q)$ and $S_n$ summed directly, the quantity
+$(\log|\Nm\delta_n|+2\log|S_n|+n\log(1/\kappa))/(n^2\log(1/\kappa))$ stays near this value for
+$6\le n\le30$: it lies in $[-0.82,-0.58]$ at $q=\varphi^{-2}$ and in $[-0.84,-0.72]$ at $q=-\varphi^{-2}$. This is not
+used in the proof. An irrationality measure for $\sqrt d\,\zeta_q(3)$ would in addition need an upper bound for
+$|P_3(q)|$, as in Lemma~\ref{lem:coef}; we do not pursue it.
+\end{remark}
+
+\begin{proof}[Proof of Corollary~\ref{cor:lucas}]
+Let $(P,Q)$ be admissible, $D=P^2-4Q$, $\eta=(P+\sqrt D)/2$ and $\bar\eta=(P-\sqrt D)/2=Q/\eta$. Then $\eta\ge\varphi>1$
+(for $Q=-1$, $\eta\ge(1+\sqrt5)/2$; for $Q=1$, $\eta\ge(3+\sqrt5)/2$) and $|\bar\eta|=1/\eta<1$, and $U_m=(\eta^m-\bar\eta^m)/\sqrt D$ by Binet's formula, so
+$U_m\ne0$ for $m\ge1$. Moreover
+\[
+U_{m+1}-\eta U_m=\frac{\bar\eta^m(\eta-\bar\eta)}{\sqrt D}=\bar\eta^m.
+\]
+Put $q=\bar\eta/\eta=Q\eta^{-2}$. Then $0<|q|<1$, $q$ is a unit of $\ZZ[\eta]$, and $\sigma q=\eta/\bar\eta=1/q$, where
+$\sigma$ is the nontrivial automorphism of $K=\QQ(\sqrt D)$; so $q$ is a unit of norm $+1$ of $K$. Since
+$q^m/(1-q^m)=\bar\eta^m/(\eta^m-\bar\eta^m)=\bar\eta^m/(\sqrt D\,U_m)$,
+\[
+\sum_{m\ge1}m^2\Bigl(\frac{U_{m+1}}{U_m}-\eta\Bigr)=\sum_{m\ge1}\frac{m^2\bar\eta^m}{U_m}=\sqrt D\,\zeta_q(3),
+\]
+which is irrational by Theorem~\ref{thm:main} with $d=D$.
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:fib}]
+Take $(P,Q)=(1,-1)$, where $\eta=\varphi$, $\bar\eta=-\varphi^{-1}$ and $q=-\varphi^{-2}$, and $(P,Q)=(2,-1)$, where
+$\eta=1+\sqrt2$. The second expression for the Fibonacci sum is $\sum_mm^2\bar\eta^m/F_m$.
+\end{proof}
+
+\begin{remark}\label{rem:plain}
+The method does not show that $\zeta_q(3)\notin\QQ$. If $\zeta_q(3)$ were rational, then by Lemma~\ref{lem:recip}
+$\sigma(S_n)=q^{-n}(S_n-2P_0)$, which is not small: it has the size of $P_0$. Numerically $|P_0|$ is about
+$|q|^{-n^2}$ (we find $\log|P_0|/(n^2\log(1/|q|))\in[0.90,0.95]$ at $n=12$ for the units $q=\pm\varphi^{-2}$, $\pm(2-\sqrt3)$, $\pm(3-2\sqrt2)$ and $(5-\sqrt{21})/2$), which is the size of
+the upper bound of Lemma~\ref{lem:coef} at $A=4$, $r=1$ (a matching lower bound, for the series of \cite{KRZ06}, is the
+conjecture of \cite[\S3.5]{KRZ06}); with it the norm estimate fails. Heuristically this is the obstruction met at $q=1/p$, where
+clearing the $p$-power denominators of the coefficients costs as much.
+The concurrent preprint \cite{Twi26} claims $\zeta_q(3)\notin\QQ(q)$, which contains this plain statement
+(see the introduction).
+\end{remark}
+
+\begin{remark}\label{rem:fibzeta}
+Theorem~\ref{thm:main} and the irrationality of $\zeta_F(3)=\sum_mF_m^{-3}$ \cite{Kri26a} do not imply each other, as far
+as we can see. Expanding $F_m^{-3}$ in powers of $\varphi^{-m}$ and splitting the resulting double series by the parity
+of the outer index expresses $\zeta_F(3)$ as a $\QQ(\sqrt5)$-linear combination of the numbers
+$\zeta_q(l)-2^{l-1}\zeta_{q^2}(l)$, $l\in\{1,3\}$, at $q=\varphi^{-2}$, and of values of Eisenstein series of odd weight
+with the character $\chi_{-4}$ (cf.\ \cite[\S1]{Kri26a}). The linear forms used here see only the $q$-zeta part, so the
+method gives no information on $\zeta_F(3)$.
+\end{remark}
+
+% ===========================================================================
+\section{Many values}\label{sec:many}
+% ===========================================================================
+
+% Source: handoff/fibzeta/many/PROOF_T2.md (Lemmas 8--11, sections 5--7). Not Lean-checked.
+In this section $A\ge4$ is even and $1\le r<A/2$ are arbitrary, $q$ is as in Theorem~\ref{thm:main}, $\kappa=|q|$,
+$\nu=\log(1/\kappa)>0$ and $e=(A-2r)n/2$. We prove Theorem~\ref{thm:many}. Besides the lemmas of
+Sections~\ref{sec:R}--\ref{sec:cost}, which hold for all such $(A,r)$, it uses two classical inputs: the asymptotic
+$\Tot(n)=3n^2/\pi^2+O(n\log n)$ of Remark~\ref{rem:mertens}, in both directions, and Nesterenko's linear independence
+criterion. None of this section is formalised.
+
+\subsection*{Denominators}
+
+\begin{lemma}\label{lem:dengen}
+In $\QQ(q)$, $(A-1)!\,d_n(q)^{A-l}P_l\in\ZZ[q^{\pm1}]$ for odd $3\le l\le A-1$, and $d_n(q)^AP_0\in\ZZ[q^{\pm1}]$.
+Hence $\Delta_n(q):=(A-1)!\,d_n(q)^A$ satisfies $\Delta_nP_0,\Delta_nP_l\in\ZZ[q^{\pm1}]$.
+\end{lemma}
+
+\begin{proof}
+Since $(s-1)!\,C_s(x)=(x+1)(x+2)\cdots(x+s-1)\in\ZZ[x]$, $(A-1)!\,[x^\lambda]C_s\in\ZZ$ for $s\le A$, and
+$[x^\lambda]C_s=0$ unless $\lambda\le s-1$. So only $s\ge l$ contributes to $P_l=2\sum_{s,j}c_{s,j}[x^{l-1}]C_s$, and
+for those $s$,
+\[
+(A-1)!\,d_n^{A-l}c_{s,j}\cdot2[x^{l-1}]C_s=d_n^{s-l}\cdot\bigl(d_n^{A-s}c_{s,j}\bigr)\cdot2(A-1)!\,[x^{l-1}]C_s
+\in\ZZ[q^{\pm1}]
+\]
+by Lemma~\ref{lem:den}. For $P_0$, $d_n^sW_{s,j}\in\ZZ[q^{\pm1}]$ because $1-q^{\pm m}$ divides $d_n$ for $m\le n$, and
+$d_n^Ac_{s,j}W_{s,j}=(d_n^{A-s}c_{s,j})(d_n^sW_{s,j})$.
+\end{proof}
+
+As in the proof of Theorem~\ref{thm:main}, the values $\Delta_nP_0$ and $\Delta_nP_l$ at $q$ lie in $\ZZ[q^{\pm1}]\subset
+\cO_K$, and by Lemma~\ref{lem:recip}
+\begin{equation}\label{eq:sigmaP}
+\sigma\bigl(P_l(q)\bigr)=q^{-e}P_l(q),\qquad\sigma\bigl(P_0(q)\bigr)=-q^{-e}P_0(q),
+\end{equation}
+since $\sigma$ maps the value at $q$ of a quotient of integer Laurent polynomials to its value at $1/q$, and the
+denominators $\Delta_n(q)$, $\Delta_n(1/q)$ do not vanish ($q$ is not a root of unity).
+
+\subsection*{Coefficients}
+
+\begin{lemma}\label{lem:coef}
+Let $q\in\CC$ with $0<\kappa=|q|<1$ and $\rho=(1-\kappa)/2$. Put $c_+=\prod_{i\ge1}(1+\kappa^i)$,
+$\gamma_-=\prod_{i\ge1}(1-(1+\rho)\kappa^i)$ and $\gamma_+=\prod_{i\ge1}(1+(1+\rho)\kappa^i)$. Then $\gamma_->0$, and for
+$0\le j\le n$, $1\le s\le A$,
+\[
+|c_{s,j}(q)|\le\rho^{s-A(j+1)}\,c_+^{A-2r+1}\,\gamma_+\,\gamma_-^{-A}\,(1+\rho)^{rn+e}\,\kappa^{-\mathcal E(j)},
+\]
+where
+\[
+\mathcal E(j)=\tfrac A2j(n-j)-\tfrac A2j+\tfrac{r^2n^2}2+\tfrac{rn}2.
+\]
+Consequently $\log\max\bigl(|P_0(q)|,\max_l|P_l(q)|\bigr)\le\frac{A+4r^2}8\,n^2\log(1/\kappa)+O(n)$, with the
+implied constant depending only on $A$, $r$ and $\kappa$.
+\end{lemma}
+
+\begin{proof}
+Put $u=1-q^jT$ and $w=1-u$, so $T=q^{-j}w$. As a function of $u$, $R$ has its poles at $u_i=1-q^{j-i}$, $0\le i\le n$,
+and $|u_i|\ge1-\kappa>\rho$ for $i\ne j$. By \eqref{eq:pf} the principal part of $R$ at $u=0$ is
+$\sum_sc_{s,j}u^{-s}$, so $c_{s,j}=\frac1{2\pi i}\oint_{|u|=\rho}R\,u^{s-1}\,du$ and $|c_{s,j}|\le\rho^s\max_{|u|=\rho}
+|R|$. On this circle $1-\rho\le|w|\le1+\rho$; note $1-\rho-\kappa=\rho$ and $(1+\rho)\kappa=\kappa(3-\kappa)/2<1$, which
+gives $\gamma_->0$. Bound the factors of \eqref{eq:R}:
+\begin{itemize}
+\item $|(q;q)_n|^{A-2r}\le c_+^{A-2r}$;
+\item $(q^{-rn}T;q)_{rn}=\prod_{M=j+1}^{j+rn}(1-q^{-M}w)$, and $|1-q^{-M}w|\le\kappa^{-M}(1+\rho)(1+\kappa^M)$, so
+the modulus is at most $\kappa^{-rnj-rn(rn+1)/2}(1+\rho)^{rn}c_+$;
+\item $(q^{n+1}T;q)_{rn}=\prod_{i=0}^{rn-1}(1-q^{n+1+i-j}w)$ has distinct exponents $\ge1$, so modulus at most $\gamma_+$;
+\item $|T^e|\le\kappa^{-je}(1+\rho)^e$;
+\item $(T;q)_{n+1}=\prod_{i=0}^n(1-q^{i-j}w)$: for $i<j$, $|1-q^{i-j}w|\ge\kappa^{i-j}(|w|-\kappa^{j-i})\ge
+\kappa^{i-j}\rho$; for $i=j$ the factor is $u$, of modulus $\rho$; the factors with $i>j$ have product at least $\gamma_-$.
+So $|(T;q)_{n+1}|\ge\kappa^{-j(j+1)/2}\rho^{j+1}\gamma_-$.
+\end{itemize}
+Multiplying, $|R|\le c_+^{A-2r+1}\gamma_+(1+\rho)^{rn+e}\kappa^{-\mathcal E(j)}\rho^{-A(j+1)}\gamma_-^{-A}$, where
+$\mathcal E(j)=rnj+rn(rn+1)/2+je-Aj(j+1)/2$; since $rnj+je=Anj/2$, this is the stated $\mathcal E(j)$, and
+$\mathcal E(j)\le An^2/8+r^2n^2/2+rn/2$. Since $\rho^{s-A(j+1)}\le\rho^{-A(n+1)}$, this gives
+$\log\max_{s,j}|c_{s,j}|\le\frac{A+4r^2}8n^2\nu+O(n)$. The coefficients of $C_s$ are nonnegative with sum $C_s(1)=s$, so
+$|P_l|\le(n+1)A(A+1)\max|c_{s,j}|$. For $1\le m\le n$, $|(1-q^m)^{-s}-1|\le(1-\kappa)^{-A}+1$ and
+$|(1-q^{-m})^{-s}|\le\max(1,(\kappa/(1-\kappa))^A)$, so $|W_{s,j}|\le nw_0$ with $w_0$ depending on $A$ and $\kappa$
+only, and $|P_0|\le n(n+1)Aw_0\max|c_{s,j}|$.
+\end{proof}
+
+This is the analogue for our coefficients of \cite[Lemma~5]{KRZ06}, proved by the same Cauchy estimate; we include the proof
+because our coefficients $c_{s,j}$ are not those of \cite{KRZ06}, and because we want an explicit bound.
+
+\subsection*{Balanced trace forms}
+
+Since $\Phi_1(1/q)=-q^{-1}\Phi_1(q)$ and $\Phi_\ell(1/q)=q^{-\eu(\ell)}\Phi_\ell(q)$ for $\ell\ge2$ ($\Phi_\ell$ is
+self-reciprocal of degree $\eu(\ell)$), we have exactly $\sigma(d_n(q))=d_n(1/q)=-q^{-\Tot(n)}d_n(q)$, so
+$|\sigma\Delta_n(q)|=\kappa^{-A\Tot(n)}|\Delta_n(q)|$. Moreover $|\log|d_n(q)||\le\sum_{\ell\le n}\sum_{a\mid\ell}
+|\log|1-q^a||\le nB$, with $B$ as in Lemma~\ref{lem:cost}, because each $a$ divides at most $n$ of the $\ell\le n$.
+With Remark~\ref{rem:mertens},
+\begin{equation}\label{eq:twoplaces}
+\log|\Delta_n(q)|=O(n),\qquad\log|\sigma\Delta_n(q)|=\frac{3A}{\pi^2}n^2\nu+O(n\log n).
+\end{equation}
+
+In this subsection $d$ is squarefree; the general case is reduced to it at the end of the proof of Theorem~\ref{thm:many}. The point of the construction is to split the cost $\log|\Nm\Delta_n|$ evenly between the two real places. For
+$n$ put $\varrho_n=\kappa^{-e}|\sigma\Delta_n|/|\Delta_n|$, and let $m=m_n\in\ZZ$ be the unique integer with
+\begin{equation}\label{eq:balance}
+2\le\kappa^{2m}\varrho_n<2\kappa^{-2}.
+\end{equation}
+Put $\Delta_n'=q^{-m}\Delta_n(q)\in\cO_K$. Since $\sigma q=1/q$, $|\Delta_n'|=\kappa^{-m}|\Delta_n|$ and
+$|\sigma\Delta_n'|=\kappa^m|\sigma\Delta_n|$, so $M_n:=\kappa^{-e}|\sigma\Delta_n'|$ satisfies $|\Delta_n'|\le M_n/2$
+and $M_n^2=\kappa^{2m}\varrho_n\cdot\kappa^{-e}|\Delta_n\sigma\Delta_n|\in\kappa^{-e}|\Delta_n\sigma\Delta_n|\cdot
+[2,2\kappa^{-2})$. By \eqref{eq:twoplaces},
+\begin{equation}\label{eq:Mn}
+\log M_n=\frac{3A}{2\pi^2}n^2\nu+O(n\log n).
+\end{equation}
+For odd $3\le l\le A-1$ define
+\[
+\ell_{0,n}=\operatorname{Tr}_{K/\QQ}\bigl(\Delta_n'P_0(q)\bigr),\qquad
+\ell_{l,n}=\operatorname{Tr}_{K/\QQ}\bigl(\Delta_n'P_l(q)/\sqrt d\bigr),
+\]
+\[
+L_n=\ell_{0,n}+\sum_l\ell_{l,n}\,\sqrt d\,\zeta_q(l),
+\]
+where $K=\QQ(\sqrt d)$ with $d$ squarefree.
+
+\begin{lemma}\label{lem:trace}
+\textup{(a)} $\ell_{0,n},\ell_{l,n}\in\ZZ$.
+\textup{(b)} $L_n=(\Delta_n'-q^{-e}\sigma\Delta_n')\,S_n(q)$.
+\textup{(c)} For large $n$, $L_n\ne0$ and $\log|L_n|=\bigl(\frac{3A}{2\pi^2}-\frac{r(A-2r)}2\bigr)n^2\nu+O(n\log n)$.
+\textup{(d)} $\log\max(|\ell_{0,n}|,\max_l|\ell_{l,n}|)\le\bigl(\frac{3A}{2\pi^2}+\frac{A+4r^2}8\bigr)n^2\nu+
+O(n\log n)$.
+\end{lemma}
+
+\begin{proof}
+(a) $\operatorname{Tr}(\cO_K)\subset\ZZ$, and $\operatorname{Tr}(x/\sqrt d)\in\ZZ$ for $x\in\cO_K$: if
+$d\equiv2,3\pmod4$ then $x=a+b\sqrt d$ with $a,b\in\ZZ$ and the trace is $2b$; if $d\equiv1\pmod4$ then
+$x=(a+b\sqrt d)/2$ with $a\equiv b\pmod 2$ and the trace is $b$. Apply this to $x=\Delta_n'P_0(q)$ and
+$x=\Delta_n'P_l(q)$, which lie in $\cO_K$ by Lemma~\ref{lem:dengen}.
+
+(b) Write $\operatorname{Tr}(z)=z+\sigma z$. The terms $z$ add up to $\Delta_n'(P_0+\sum_lP_l\zeta_q(l))=
+\Delta_n'S_n$ by Lemma~\ref{lem:expansion}. By \eqref{eq:sigmaP} and $\sigma\sqrt d=-\sqrt d$, the conjugate terms are
+$\sigma(\Delta_n'P_0)=-q^{-e}\sigma(\Delta_n')P_0$ and $\sigma(\Delta_n'P_l/\sqrt d)\cdot\sqrt d\,\zeta_q(l)=
+-q^{-e}\sigma(\Delta_n')P_l\zeta_q(l)$; they add up to $-q^{-e}\sigma(\Delta_n')S_n$.
+
+(c) $|\Delta_n'-q^{-e}\sigma\Delta_n'|\in[M_n-|\Delta_n'|,M_n+|\Delta_n'|]\subset[M_n/2,3M_n/2]$. Combine with
+Lemma~\ref{lem:size} and \eqref{eq:Mn}.
+
+(d) $|\ell_{0,n}|\le(|\Delta_n'|+M_n)|P_0(q)|\le\frac32M_n|P_0(q)|$, and likewise $|\ell_{l,n}|\le\frac32M_n|P_l(q)|/
+\sqrt d$. Apply Lemma~\ref{lem:coef} and \eqref{eq:Mn}.
+\end{proof}
+
+\subsection*{Proof of Theorem~\ref{thm:many}}
+We use Nesterenko's criterion \cite{Nes85}, in the precise form of \cite[Theorem~A]{FZ10} (under its
+hypothesis~(N)), rescaled as in \cite[Proposition~2]{KRZ06}: let $\vartheta_1,\dots,
+\vartheta_N$ be real numbers, and suppose that there are linear forms $\sum_jp_{j,n}\vartheta_j$ with
+$p_{j,n}\in\ZZ$ such that, as $n\to\infty$, $\frac1{n^2}\log|\sum_jp_{j,n}\vartheta_j|\to\alpha<0$ and
+$\limsup\frac1{n^2}\log|p_{j,n}|\le\beta$ for every $j$. Then $\dim_\QQ(\QQ\vartheta_1+\dots+\QQ\vartheta_N)\ge
+1-\alpha/\beta$. (The usual statement has $N'$ in place of $n^2$; it applies to the forms indexed by
+$N'\mapsto\lfloor\sqrt{N'}\rfloor$, since $\lfloor\sqrt{N'}\rfloor^2=N'+O(\sqrt{N'})$, and it does not require the
+forms to be distinct.)
+
+Take $\vartheta_1=1$ and $\vartheta_2,\dots,\vartheta_{A/2}$ equal to $\sqrt d\,\zeta_q(3),\dots,\sqrt d\,
+\zeta_q(A-1)$, with the forms $L_n$. By Lemma~\ref{lem:trace},
+$\alpha=(\frac{3A}{2\pi^2}-\frac{r(A-2r)}2)\nu$ and $\beta=(\frac{3A}{2\pi^2}+\frac{A+4r^2}8)\nu>0$. If $\alpha\ge0$
+then $\tau(A,r)\le0$ and there is nothing to prove; otherwise
+\[
+\dim\ge1-\frac\alpha\beta=1+\frac{r(A-2r)/2-3A/(2\pi^2)}{3A/(2\pi^2)+(A+4r^2)/8}=1+\tau(A,r).
+\]
+The bound does not depend on $q$ or $d$, and it is the same for every $d$ with $K=\QQ(\sqrt d)$, since
+$\sqrt d\,\zeta_q(l)$ changes by a common rational factor. \qed
+
+\begin{proof}[Proof of the asymptotic bound and of Corollary~\ref{cor:many}]
+Put $r=t\sqrt A$. Then $\tau(A,t\sqrt A)/\sqrt A\to4\pi^2t/(12+\pi^2+4\pi^2t^2)$ as $A\to\infty$, which is largest at
+$t=\sqrt{12+\pi^2}/(2\pi)=0.744\ldots$, with value $\pi/\sqrt{12+\pi^2}=0.67178\ldots$; taking
+$r=\lceil t\sqrt A\rceil$, which is admissible for $A\ge6$, gives the same limit. For Corollary~\ref{cor:many},
+$1+\tau(12,2)=1+(64\pi^2-144)/(144+28\pi^2)=2.1601\ldots>2$, so
+$\dim_\QQ(\QQ+\QQ\sqrt d\zeta_q(3)+\dots+\QQ\sqrt d\zeta_q(11))\ge3$, while $\dim_\QQ(\QQ+\QQ\sqrt d\zeta_q(3))\le2$.
+The Lucas form follows from the identity $\sum_mm^{l-1}(U_{m+1}/U_m-\eta)=\sqrt D\,\zeta_q(l)$, proved for $l=3$ in the
+proof of Corollary~\ref{cor:lucas} and valid for every $s$ by the same computation.
+\end{proof}
+
+\begin{remark}\label{rem:balance}
+Without the balancing, that is with $\Delta_n$ in place of $\Delta_n'$, the form carries the whole cost
+$\log|\Nm\Delta_n|$ at one place, and the same argument gives only
+$1+(4\pi^2r(A-2r)-24A)/(24A+\pi^2(A+4r^2))$, which is asymptotically $(\pi/\sqrt{24+\pi^2})\sqrt A=0.5398\ldots\sqrt A$
+and does not recover Theorem~\ref{thm:main} at $A=4$. With the balancing, writing $\mathrm{dec}=r(A-2r)/2$,
+$\mathrm{deg}=3A/\pi^2$ and $\mathrm{coef}=(A+4r^2)/8$, we have $1+\tau=(\mathrm{dec}+\mathrm{coef})/(\mathrm{deg}/2+
+\mathrm{coef})$, while the bound of \cite[Theorem~2]{KRZ06} at $q=1/p$ is $(\mathrm{dec}+\mathrm{coef})/(\mathrm{deg}+
+2\,\mathrm{coef})$, where the second place is $p$-adic and the denominator must also clear powers of $p$ of size
+$\mathrm{coef}$. So $1+\tau(A,r)$ is exactly twice the bound of \cite{KRZ06}. At $A=4$, $r=1$ the condition $\tau>0$
+reads $2>12/\pi^2$, the inequality behind the proof of Theorem~\ref{thm:main} with the asymptotic of
+Remark~\ref{rem:mertens}.
+
+The balancing \eqref{eq:balance} itself is the standard device of moving an $\cO_K$-multiplier by a unit so that its
+archimedean sizes are equal, as in Siegel's lemma over a number field \cite[Chapter~2]{BG06}. What is specific here is
+its combination with the Galois-equivariance \eqref{eq:sigmaP} and the twist by $\sqrt d$, which make the form small at
+both real places.
+
+The comparison with \cite{KRZ06} is one of the same leading constants (decay, coefficient size and denominator, which our variant of the series shares with that of \cite{KRZ06}) and the same single-form criterion, at two kinds of $q$. At $q=1/p$ the results of
+\cite{KRZ06} have been improved: Jouhet and Mosaki \cite{JM10} prove that one power of $d_n$ can be saved in the
+denominators of a variant $\tilde S_n$ of the series, and deduce that one of $\zeta_q(3),\zeta_q(5),\zeta_q(7),
+\zeta_q(9)$ is irrational; Fischler and Zudilin \cite[Theorems~4 and~6]{FZ10} refine Nesterenko's criterion by using
+divisibility properties of the coefficients, and obtain for instance that $1,\zeta_q(i_0),\dots,\zeta_q(i_3)$ are
+linearly independent for some odd $i_0<\dots<i_3$ with $i_0\le9$, $i_1\le37$, $i_2\le83$, $i_3\le145$. Neither
+refinement changes the asymptotic constant, and we have not adapted either to units. In our setting the denominator of
+$P_0$ divides $d_n^{A-1}$ in all cases we computed exactly (31 triples $(A,r,n)$ with $A\le12$), but we have not proved
+this for $S_n$; if it held, $12A$ would become $12(A-1)$ in $\tau(A,r)$.
+\end{remark}
+
+% ===========================================================================
+\section{Related work}\label{sec:related}
+% ===========================================================================
+
+% Source: handoff/fibzeta/many/NOVELTY_2.md (2026-11-19) and paper/NOVELTY_RECHECK.md. Re-run the Hexagon search
+% (q = Lambert, Pisot, q-zeta; repos of twinheterodox) on the day of posting.
+\emph{Even weights and weight one.} For even $k$ the values $\zeta_q(k)$ are polynomials in the Eisenstein series
+$E_2,E_4,E_6$ at $q$, and at algebraic $q$ with $0<|q|<1$ the values of these series are algebraically independent by
+Nesterenko's theorem \cite{Nes96}. At weight one there is a long line of irrationality and linear independence results
+for Lambert series at algebraic bases: Tachiya \cite{Tac04} for algebraic integers of Pisot type, Bundschuh and
+V\"a\"an\"anen \cite{BV05,BV05b}, Bundschuh \cite{Bun07} for integers of $\QQ$ or of an imaginary quadratic field, and
+Dixit, Kumar and Pathak \cite{DKP24}, whose results on values of the $q$-exponential function at Pisot bases include the
+weight-one value $\zeta_q(1)$. All of these concern weight at most two.
+
+\emph{Odd weights at $q=1/p$.} For odd $k\ge3$ the known results concern $q=1/p$ with $p\in\ZZ\setminus\{0,\pm1\}$:
+the dimension bound of Krattenthaler, Rivoal and Zudilin \cite{KRZ06}, with asymptotic constant
+$\pi/(2\sqrt{\pi^2+12})=0.336\ldots$, and its refinements for fixed $A$ by Jouhet and Mosaki \cite{JM10} and Fischler
+and Zudilin \cite{FZ10}; Postelmans and Van Assche \cite{PVA07} and Zudilin \cite{Zud02} treat weights one and two. The
+extension of \cite{KRZ06} to algebraic $q$ sketched in \cite[\S3.5]{KRZ06} is conditional on a conjectured asymptotic for
+the coefficients, and Bundschuh and Zudilin \cite[\S6]{BZ07} list the arithmetic of $\zeta_q(k)$ at reciprocals of
+Pisot and Salem numbers as an open problem. The unrefereed draft \cite{UPL} claims $\zeta_{1/p}(3)\notin\QQ$ for integers
+$p\ge2$, with a Lean formalisation of its main theorem (not checked by us), by a moving-denominator Hankel determinant.
+
+\emph{Concurrent work.} The preprints \cite{Twi26,Twi26b}, discussed in the introduction, claim
+$\zeta_{1/b}(3)\notin\QQ(b)$, and the linear independence of $1,\zeta_{1/b}(1),\zeta_{1/b}(2),\zeta_{1/b}(3)$ over
+$\QQ(b)$, for the class of bases $b$ described in the introduction, which contains the Pisot and Salem numbers; the first
+builds on \cite{UPL}. A third preprint by the same contributor \cite{Twi26c} extends the first claim to some
+bases $b$ with several conjugates outside the unit disk, under a condition on the Mahler measure. These claims contain
+Theorem~\ref{thm:main} as a special case, and the plain statement $\zeta_q(3)\notin\QQ$, which our method does not reach
+(Remark~\ref{rem:plain}). Our proof of Theorem~\ref{thm:main} was found independently, uses a different construction
+(the very-well-poised forms of \cite{KRZ06} and the reciprocity of Lemma~\ref{lem:recip}), and is checked in Lean. The
+results of \cite{Twi26,Twi26b,Twi26c} stop at weight three; we know of no other lower bound for the dimension spanned by
+odd $q$-zeta values at an algebraic irrational $q$ than the one of Section~\ref{sec:many}.
+
+% ===========================================================================
+\section{Formal verification}\label{sec:lean}
+% ===========================================================================
+
+The Lean development is the repository
+\begin{center}
+\TODO{public repository URL}
+\end{center}
+all file names below refer to it. Its Lean sources are those of commit \texttt{6318359}; later commits change only
+documentation and this paper. It (library \lean{QZeta3}, Lean~4.35.0, Mathlib v4.35.0, about 3200 lines) proves
+the following four theorems, stated in \lean{QZeta3/Final.lean}:
+\begin{alltt}\footnotesize
+theorem QZeta3.irrational_sqrt_mul_zetaq3 {\char123}q : \(\mathbb{R}\){\char125} {\char123}s : \(\mathbb{Z}\){\char125}
+    (hq0 : q \(\ne\) 0) (hq1 : |q| < 1) (hs : q + q\(\sp{-1}\) = s)
+    {\char123}d : \(\mathbb{N}\){\char125} (hd : 0 < d) (hsq : IsSquare ((d : \(\mathbb{Z}\)) * (s ^ 2 - 4))) :
+    Irrational (Real.sqrt d * zetaq3 q)
+
+theorem QZeta3.irrational_sub_inv_mul_zetaq3 {\char123}q : \(\mathbb{R}\){\char125} {\char123}s : \(\mathbb{Z}\){\char125}
+    (hq0 : q \(\ne\) 0) (hq1 : |q| < 1) (hs : q + q\(\sp{-1}\) = s) :
+    Irrational ((q - q\(\sp{-1}\)) * zetaq3 q)
+
+theorem QZeta3.irrational_lucas_sum {\char123}a : \(\mathbb{N}\){\char125} {\char123}E : \(\mathbb{Z}\){\char125}
+    (h : (E = 1 \(\land\) 1 \(\le\) a) \(\lor\) (E = -1 \(\land\) 3 \(\le\) a)) :
+    Irrational (\(\sum\)' m : \(\mathbb{N}\), (m : \(\mathbb{R}\)) ^ 2 *
+      ((lucasU a E (m + 1) : \(\mathbb{R}\)) / lucasU a E m - epsU a E))
+
+theorem QZeta3.irrational_fib_sum :
+    Irrational (\(\sum\)' m : \(\mathbb{N}\), (m : \(\mathbb{R}\)) ^ 2 *
+      ((Nat.fib (m + 1) : \(\mathbb{R}\)) / Nat.fib m - Real.goldenRatio))
+\end{alltt}
+The definitions they use are, in \lean{QZeta3/Defs.lean},
+\begin{alltt}\footnotesize
+noncomputable def zetaq3 (q : \(\mathbb{R}\)) : \(\mathbb{R}\) :=
+  \(\sum\)' m : \(\mathbb{N}\), (m : \(\mathbb{R}\)) ^ 2 * q ^ m / (1 - q ^ m)
+
+def lucasU (a : \(\mathbb{N}\)) (E : \(\mathbb{Z}\)) : \(\mathbb{N}\) \(\to\) \(\mathbb{Z}\)
+  | 0 => 0
+  | 1 => 1
+  | (m + 2) => a * lucasU a E (m + 1) + E * lucasU a E m
+
+noncomputable def epsU (a : \(\mathbb{N}\)) (E : \(\mathbb{Z}\)) : \(\mathbb{R}\) :=
+  (a + Real.sqrt ((a : \(\mathbb{R}\)) ^ 2 + 4 * E)) / 2
+\end{alltt}
+The proofs use only the axioms \lean{propext}, \lean{Classical.choice} and \lean{Quot.sound} (\lean{Axioms.lean});
+there is no \lean{sorry}, no \lean{axiom} declaration, no \lean{native\_decide} and no \lean{implemented\_by}.
+The definitions and the six ingredient statements, in the files \lean{QZeta3/Defs.lean} and
+\lean{QZeta3/Statements.lean}, were fixed (``frozen'') in the first commit, before any ingredient was proved, and
+were not changed afterwards. The four theorem statements above were committed with placeholder proofs before the last
+two ingredients were proved, and their text is unchanged since then.
+
+\emph{The statements.} In \lean{irrational\_sqrt\_mul\_zetaq3}, the hypotheses $q\ne0$, $|q|<1$ and $q+q^{-1}=s\in\ZZ$
+say exactly that $q$ is a real quadratic unit of norm $+1$ with $0<|q|<1$ (as noted after Theorem~\ref{thm:main}), and
+$d>0$ with $d(s^2-4)$ a square says exactly that $\QQ(\sqrt d)=\QQ(q)$; so it is Theorem~\ref{thm:main}.
+\lean{irrational\_sub\_inv\_mul\_zetaq3} is the form with $\theta=q-q^{-1}$. In \lean{irrational\_lucas\_sum} the
+recurrence is $U_{m+2}=aU_{m+1}+EU_m$, so $(a,E)=(P,-Q)$, and the hypothesis is admissibility; \lean{epsU a E} is
+$\eta$. The $m=0$ terms of the series are $0$ in Lean (for \lean{zetaq3} the term is $0\cdot1/0=0$; in the Lucas
+series the factor $m^2$ vanishes). \lean{irrational\_fib\_sum} is the case $a=E=1$, with Mathlib's \lean{Nat.fib} and
+\lean{Real.goldenRatio} (\lean{QZeta3.lucasU\_one\_one}, \lean{QZeta3.epsU\_one\_one}).
+
+\emph{What has to be trusted.} The kernel checks the proofs; to see that the statements mean what is claimed one reads
+the four statements above, the three definitions, and Mathlib's \lean{tsum}, \lean{Irrational}, \lean{Real.sqrt},
+\lean{IsSquare}, \lean{Nat.fib} and \lean{Real.goldenRatio}. A divergent \lean{tsum} has the value $0$, which is
+rational, so none of the theorems can hold for a degenerate reason; in addition \lean{QZeta3.summable\_zetaq3} and
+\lean{QZeta3.summable\_lucas} prove that the series converge. A blind back-translation of the statements, by a reviewer
+(also a Claude model) who saw only the Lean source without comments or intended meaning, found no mismatch with the
+author's working statement of Theorem~\ref{thm:main} and Corollaries~\ref{cor:lucas}--\ref{cor:fib} (the same content
+as here); it is recorded in \lean{FIDELITY.md}. The
+author also checked the statements against Theorem~\ref{thm:main} and the corollaries (\lean{STATEMENT\_REVIEW.md}),
+and \lean{TRUST.md} summarises the trust base.
+
+\subsection*{The chain}
+\lean{QZeta3/Defs.lean} defines the construction for $A=4$, $r=1$ over an arbitrary field: the $q$-Pochhammer symbol
+\lean{qPoch}, the rational function \lean{Rfun} of \eqref{eq:R}, the coefficients \lean{cc} of \eqref{eq:pf}, the
+coefficients \lean{P3} and \lean{P0} of Lemma~\ref{lem:expansion} (with \lean{Wf} for $W_{s,j}$), and, over $\RR$,
+\lean{dn} for $d_n$ and \lean{Sn} for $S_n$. \lean{QZeta3/Statements.lean} states six ingredients as propositions, and
+\lean{QZeta3.irrational\_sub\_inv\_mul\_zetaq3\_of} (in \lean{QZeta3/Main.lean}) derives the theorem from them by the
+argument of Section~\ref{sec:proof}; \lean{QZeta3/Reduction.lean} and \lean{QZeta3/Corollary.lean} derive the $\sqrt d$
+form and the corollaries.
+In the following table all Lean names are in the namespace \lean{QZeta3}.
+\begin{center}
+\footnotesize
+\begin{tabular}{lll}
+\toprule
+Paper & Lean statement & Lean proof\\
+\midrule
+\eqref{eq:pf} & \lean{PFIdentity} & \lean{PartialFrac.pfIdentity}\\
+Lemma~\ref{lem:expansion} & \lean{Expansion} & \lean{Expand.expansion}\\
+Lemmas~\ref{lem:inv}, \ref{lem:recip}, Cor.~\ref{cor:cinv} & \lean{Recip} & \lean{Reciprocity.recip}\\
+Lemma~\ref{lem:den}, \S\ref{sec:proof} & \lean{Integrality} & \lean{Denom.integrality}\\
+Lemmas~\ref{lem:wp}, \ref{lem:size} & \lean{SizeBound} & \lean{Size.sizeBound}\\
+Lemma~\ref{lem:cost} & \lean{CostBound} & \lean{Cost.costBound}\\
+Theorem~\ref{thm:main}, $\theta=q-q^{-1}$ & & \lean{irrational\_sub\_inv\_mul\_zetaq3\_of}\\
+Theorem~\ref{thm:main}, $\sqrt d$ & & \lean{irrational\_sqrt\_mul\_zetaq3\_ing}\\
+Corollary~\ref{cor:lucas} & & \lean{lucas\_sum\_eq}\\
+ & & \lean{irrational\_lucas\_sum\_ing}\\
+\bottomrule
+\end{tabular}
+\end{center}
+The formal statements are the lemmas in the form the assembly needs, for $A=4$, $r=1$ and real $q$. \lean{Expansion} and
+\lean{Recip} are derived from \lean{PFIdentity}. \lean{Recip} states Lemma~\ref{lem:recip} at every real $q\ne0$ with
+$|q|\ne1$. \lean{Integrality} says that $d_n^4P_0$ and $d_n^4P_3$ agree, at every real $x\ne0$ with $|x|\ne1$, with
+one fixed integer Laurent polynomial (\lean{LaurentInt}); this is what allows evaluation at both $q$ and $q^{-1}$.
+\lean{SizeBound} gives $S_n\ne0$ and $|S_n|\le C|q|^{n(n+1)}$ for large $n$, and \lean{CostBound} is
+$|d_n(q)d_n(q^{-1})|^8\le C^n|q|^{-3(n+1)^2}$, the bound $\Tot(n)\le\frac38(n+1)^2$ of Lemma~\ref{lem:cost}.
+
+\subsection*{Differences from the written proof}
+\begin{itemize}
+\item \emph{No number fields.} The formal proof does not use Mathlib's number fields. The role of $\sqrt d$ is played
+by $\theta=q-q^{-1}$, as in Section~\ref{sec:proof}; $\sigma$ is replaced by evaluation of integer Laurent polynomials
+at $q^{-1}$, and the norm by the product $p(q)\,p(q^{-1})$, which is an integer for $p\in\ZZ[X]$ because
+$q+q^{-1}\in\ZZ$ (\lean{QZeta3.norm\_int}).
+\item \emph{Partial-fraction coefficients.} The coefficients $c_{s,j}$ are \emph{defined} as the coefficients of the
+power-series expansion of $u^4R_n$ at the pole $T=q^{-j}$, in the variable $u=1-q^jT$ (\lean{Gser}, \lean{cc}), and
+\eqref{eq:pf} is then proved. With this definition, Corollary~\ref{cor:cinv} follows directly from Lemma~\ref{lem:inv},
+without appeal to the uniqueness of partial fractions.
+\item \emph{The cyclotomic bound.} The formal proof uses the elementary bound $\Tot(n)\le\frac38(n+1)^2$ of
+Lemma~\ref{lem:cost}, with exponent $-\frac12$, not the asymptotic of Remark~\ref{rem:mertens}, which is not in Mathlib.
+(The author's working notes used the asymptotic, with exponent $12/\pi^2-2$.)
+\item \emph{Generality.} The formal statements fix $A=4$, $r=1$; Theorem~\ref{thm:main} needs nothing else. The Lean form
+of Theorem~\ref{thm:main} allows every integer $d>0$ with $\QQ(\sqrt d)=\QQ(q)$, as does the statement above.
+\end{itemize}
+
+\subsection*{Provenance}
+The library name \lean{QZeta3} (for the $q$-analogue of $\zeta(3)$) is also the name of the Lean formalisation
+\cite{QZ3} of \cite{UPL}. The two are different developments, of different theorems, and ours is not a fork. One file,
+\lean{QZeta3/Cost/Cyclo.lean} (cyclotomic size bounds), is adapted from the formalisation accompanying \cite{Kri26b},
+which generalises that of \cite{Kri26a}, which in turn adapts part of \cite{QZ3} (Apache License~2.0); the file says so in
+its header, and the repository's \lean{NOTICE} file records it. The mathematics of the present paper does not depend on
+\cite{UPL}: the construction is that of \cite{KRZ06}.
+
+\subsection*{Use of AI tools}
+This work was carried out with substantial assistance from AI systems (Anthropic's Claude models), which were used to
+search the literature, to develop and check the proof, to write the Lean formalisation and to draft this text. The
+author directed the project and is responsible for its content. The formal proof is checked by the Lean kernel and
+uses only the standard axioms \lean{propext}, \lean{Classical.choice} and \lean{Quot.sound}.
+
+% ===========================================================================
+\bibliographystyle{amsplain}
+\bibliography{refs}
+
+\end{document}

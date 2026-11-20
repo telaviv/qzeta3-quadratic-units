@@ -1,0 +1,23 @@
+1+tau(4,1) = 1.24383748349
+1+tau(12,2) = 2.16011878399  formula (64pi^2-144)/(144+28pi^2) = 1.16011878399
+A=6 best r: ('1.5033138', 1)
+A=8 best r: ('1.660399', 2)
+A=10 best r: ('1.9392774', 2)
+A=12 best r: ('2.1601188', 2)
+const pi/sqrt(12+pi^2) = 0.671783618168  t* = 0.7442872771
+unbalanced const pi/sqrt(24+pi^2) = 0.539814828956  KRZ const pi/(2 sqrt(12+pi^2)) = 0.335891809084
+unbalanced 1+tau at (4,1) = 0.90258646
+12/pi^2 - 2 = -0.7841457963
+1-alpha/beta == 1+tau : True
+1+tau == (dec+coef)/(deg/2+coef): True
+KRZ (3.4) == (dec+coef)/(deg+2coef): True
+1+tau == 2*KRZ(3.4): True
+KRZ delta(12,2) = 1.080059392
+unbalanced 1-alpha/beta == stated: True
+alpha>=0 <=> tau<=0 (numerators): True
+lim tau(A,t sqrt A)/sqrt A = 4*pi**2*t/(pi**2*(4*t**2 + 1) + 12)
+critical t: [sqrt(pi**2 + 12)/(2*pi)]  value: [pi/sqrt(pi**2 + 12)]
+even A in [4, 2e5] with ceil(t* sqrt A) not admissible: [4]
+smallest A with 1+tau > k-? (dim >= k): {2: 12, 3: 24, 4: 40, 5: 62, 6: 88, 7: 118, 8: 152}
+Tot(n) <= sum_odd + sum_half <= (3n^2+6n+2)/8 <= 3(n+1)^2/8 for n<=20000: True
+Tot(20000)/20000^2 = 0.30397599  3/pi^2 = 0.3039635509270133

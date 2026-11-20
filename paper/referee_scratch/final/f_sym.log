@@ -1,0 +1,10 @@
+(4, 1, 1) {'wp': True, 'inv': True, 'pf': True, 'cinv': True, 'den': True, 'Q0': True, 'recip': True, 'dgen': True, 'info_noFact': True, 'info_dA-1_P0': True, 'dsym': True}
+(4, 1, 2) {'wp': True, 'inv': True, 'pf': True, 'cinv': True, 'den': True, 'Q0': True, 'recip': True, 'dgen': True, 'info_noFact': True, 'info_dA-1_P0': True, 'dsym': True}
+(4, 1, 3) {'wp': True, 'inv': True, 'pf': True, 'cinv': True, 'den': True, 'Q0': True, 'recip': True, 'dgen': True, 'info_noFact': True, 'info_dA-1_P0': True, 'dsym': True}
+(6, 1, 2) {'wp': True, 'inv': True, 'pf': True, 'cinv': True, 'den': True, 'Q0': True, 'recip': True, 'dgen': True, 'info_noFact': False, 'info_dA-1_P0': True, 'dsym': True}
+(6, 2, 2) {'wp': True, 'inv': True, 'pf': True, 'cinv': True, 'den': True, 'Q0': True, 'recip': True, 'dgen': True, 'info_noFact': False, 'info_dA-1_P0': True, 'dsym': True}
+(8, 1, 1) {'wp': True, 'inv': True, 'pf': True, 'cinv': True, 'den': True, 'Q0': True, 'recip': True, 'dgen': True, 'info_noFact': False, 'info_dA-1_P0': True, 'dsym': True}
+(8, 2, 2) {'wp': True, 'inv': True, 'pf': True, 'cinv': True, 'den': True, 'Q0': True, 'recip': True, 'dgen': True, 'info_noFact': False, 'info_dA-1_P0': True, 'dsym': True}
+(8, 3, 1) {'wp': True, 'inv': True, 'pf': True, 'cinv': True, 'den': True, 'Q0': True, 'recip': True, 'dgen': True, 'info_noFact': False, 'info_dA-1_P0': True, 'dsym': True}
+(10, 2, 1) {'wp': True, 'inv': True, 'pf': True, 'cinv': True, 'den': True, 'Q0': True, 'recip': True, 'dgen': True, 'info_noFact': False, 'info_dA-1_P0': True, 'dsym': True}
+(12, 2, 1) {'wp': True, 'inv': True, 'pf': True, 'cinv': True, 'den': True, 'Q0': True, 'recip': True, 'dgen': True, 'info_noFact': False, 'info_dA-1_P0': True, 'dsym': True}

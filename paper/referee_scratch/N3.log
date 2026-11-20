@@ -1,0 +1,53 @@
+N3 bracket with delta_n = d_n^4 (exact Norm via d_n(q) d_n(1/q))
+  q=phi^-2 n= 6 bracket(d^4)=-0.8189  bracket(6d^4)=-0.71547
+  q=phi^-2 n= 7 bracket(d^4)=-0.58192  bracket(6d^4)=-0.50593
+  q=phi^-2 n= 8 bracket(d^4)=-0.67731  bracket(6d^4)=-0.61913
+  q=phi^-2 n= 9 bracket(d^4)=-0.66514  bracket(6d^4)=-0.61917
+  q=phi^-2 n=10 bracket(d^4)=-0.79499  bracket(6d^4)=-0.75776
+  q=phi^-2 n=11 bracket(d^4)=-0.64876  bracket(6d^4)=-0.61799
+  q=phi^-2 n=12 bracket(d^4)=-0.7681  bracket(6d^4)=-0.74224
+  q=phi^-2 n=13 bracket(d^4)=-0.64856  bracket(6d^4)=-0.62653
+  q=phi^-2 n=14 bracket(d^4)=-0.73105  bracket(6d^4)=-0.71205
+  q=phi^-2 n=15 bracket(d^4)=-0.77218  bracket(6d^4)=-0.75564
+  q=phi^-2 n=16 bracket(d^4)=-0.79976  bracket(6d^4)=-0.78521
+  q=phi^-2 n=17 bracket(d^4)=-0.70497  bracket(6d^4)=-0.69209
+  q=phi^-2 n=18 bracket(d^4)=-0.77527  bracket(6d^4)=-0.76378
+  q=phi^-2 n=19 bracket(d^4)=-0.69304  bracket(6d^4)=-0.68272
+  q=phi^-2 n=20 bracket(d^4)=-0.7458  bracket(6d^4)=-0.73649
+  q=phi^-2 n=21 bracket(d^4)=-0.76379  bracket(6d^4)=-0.75535
+  q=phi^-2 n=22 bracket(d^4)=-0.7986  bracket(6d^4)=-0.7909
+  q=phi^-2 n=23 bracket(d^4)=-0.72877  bracket(6d^4)=-0.72173
+  q=phi^-2 n=24 bracket(d^4)=-0.77899  bracket(6d^4)=-0.77252
+  q=phi^-2 n=25 bracket(d^4)=-0.7482  bracket(6d^4)=-0.74225
+  q=phi^-2 n=26 bracket(d^4)=-0.7771  bracket(6d^4)=-0.77159
+  q=phi^-2 n=27 bracket(d^4)=-0.76861  bracket(6d^4)=-0.7635
+  q=phi^-2 n=28 bracket(d^4)=-0.79649  bracket(6d^4)=-0.79174
+  q=phi^-2 n=29 bracket(d^4)=-0.74132  bracket(6d^4)=-0.73689
+  q=phi^-2 n=30 bracket(d^4)=-0.78697  bracket(6d^4)=-0.78284
+  q=phi^-2: range d^4: [-0.8189, -0.5819]; range 6d^4: [-0.7917, -0.5059]
+  q=-phi^-2 n= 6 bracket(d^4)=-0.84026  bracket(6d^4)=-0.73683
+  q=-phi^-2 n= 7 bracket(d^4)=-0.73302  bracket(6d^4)=-0.65703
+  q=-phi^-2 n= 8 bracket(d^4)=-0.79292  bracket(6d^4)=-0.73474
+  q=-phi^-2 n= 9 bracket(d^4)=-0.76783  bracket(6d^4)=-0.72187
+  q=-phi^-2 n=10 bracket(d^4)=-0.81263  bracket(6d^4)=-0.7754
+  q=-phi^-2 n=11 bracket(d^4)=-0.71861  bracket(6d^4)=-0.68784
+  q=-phi^-2 n=12 bracket(d^4)=-0.82679  bracket(6d^4)=-0.80094
+  q=-phi^-2 n=13 bracket(d^4)=-0.73815  bracket(6d^4)=-0.71612
+  q=-phi^-2 n=14 bracket(d^4)=-0.77427  bracket(6d^4)=-0.75527
+  q=-phi^-2 n=15 bracket(d^4)=-0.78483  bracket(6d^4)=-0.76828
+  q=-phi^-2 n=16 bracket(d^4)=-0.81087  bracket(6d^4)=-0.79632
+  q=-phi^-2 n=17 bracket(d^4)=-0.73796  bracket(6d^4)=-0.72508
+  q=-phi^-2 n=18 bracket(d^4)=-0.80184  bracket(6d^4)=-0.79035
+  q=-phi^-2 n=19 bracket(d^4)=-0.73542  bracket(6d^4)=-0.7251
+  q=-phi^-2 n=20 bracket(d^4)=-0.78404  bracket(6d^4)=-0.77473
+  q=-phi^-2 n=21 bracket(d^4)=-0.78546  bracket(6d^4)=-0.77702
+  q=-phi^-2 n=22 bracket(d^4)=-0.80452  bracket(6d^4)=-0.79683
+  q=-phi^-2 n=23 bracket(d^4)=-0.74684  bracket(6d^4)=-0.7398
+  q=-phi^-2 n=24 bracket(d^4)=-0.79558  bracket(6d^4)=-0.78911
+  q=-phi^-2 n=25 bracket(d^4)=-0.76371  bracket(6d^4)=-0.75775
+  q=-phi^-2 n=26 bracket(d^4)=-0.78154  bracket(6d^4)=-0.77603
+  q=-phi^-2 n=27 bracket(d^4)=-0.77273  bracket(6d^4)=-0.76762
+  q=-phi^-2 n=28 bracket(d^4)=-0.80032  bracket(6d^4)=-0.79557
+  q=-phi^-2 n=29 bracket(d^4)=-0.75284  bracket(6d^4)=-0.74842
+  q=-phi^-2 n=30 bracket(d^4)=-0.804  bracket(6d^4)=-0.79986
+  q=-phi^-2: range d^4: [-0.8403, -0.7186]; range 6d^4: [-0.8009, -0.657]

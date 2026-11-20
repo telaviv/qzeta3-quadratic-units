@@ -1,0 +1,46 @@
+⚠ [9047/9073] Replayed QZeta3.Defs
+warning: QZeta3\Defs.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [9054/9073] Replayed QZeta3.Main
+warning: QZeta3/Main.lean:160:55: This simp argument is unused:
+  aeval_C
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hY, map_add, map_mul, map_sub, map_pow, aeval_X, ← e0, ← e3, algebraMap_int_eq, eq_intCast,
+    map_natCast, map_intCast, map_ofNat]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: QZeta3/Main.lean:161:6: This simp argument is unused:
+  algebraMap_int_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hY, map_add, map_mul, map_sub, map_pow, aeval_C, aeval_X, ← e0, ← e3, eq_intCast, map_natCast,
+    map_intCast, map_ofNat]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: QZeta3/Main.lean:168:55: This simp argument is unused:
+  aeval_C
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hY, map_add, map_mul, map_sub, map_pow, aeval_X, ← e0, ← e3, algebraMap_int_eq, eq_intCast,
+    map_natCast, map_intCast, map_ofNat]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: QZeta3/Main.lean:169:6: This simp argument is unused:
+  algebraMap_int_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hY, map_add, map_mul, map_sub, map_pow, aeval_C, aeval_X, ← e0, ← e3, eq_intCast, map_natCast,
+    map_intCast, map_ofNat]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: QZeta3/Main.lean:162:4: Unused tactic linter: `push_cast` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: QZeta3/Main.lean:170:4: Unused tactic linter: `push_cast` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Build completed successfully (9073 jobs).
+
+real	4m51.684s
+user	0m0.031s
+sys	0m0.015s

@@ -1,0 +1,250 @@
+% Bibliography for "Irrationality of sqrt(d) zeta_q(3) at real quadratic units".
+% Style: amsplain.
+% Sources of the bibliographic data (no entry is from memory alone unless marked TODO):
+%  * KRZ06, Nes96, UPL, QZ3: as in lean_fibzeta/paper/refs.bib and lean_lucasu/paper/refs.bib (checked in
+%    lean_lucasu/paper/REFERENCES_CHECK.md where listed there); KRZ06 issue number from the reference lists of
+%    handoff/fibzeta/lit/MPIM_preprint_2009_35.txt (Fischler--Zudilin) and JouhetMosaki_0712.1762.txt.
+%  * JM10, FZ10: as in lean_fibzeta/paper/refs.bib.
+%  * Bor92, PVA07, Jad96: reference lists of the local copies of Jouhet--Mosaki and KRZ (handoff/fibzeta/lit/).
+%  * BV05: first page of the local copy handoff/fibzeta/lit/bv2005/bv2005.txt.
+%  * Kri26a, Kri26b, Twi26: Hexagon identifiers from handoff/fibzeta/many/NOVELTY.md and
+%    handoff/HEXAGON_TWINHETERODOX_2611.md.
+
+@article{KRZ06,
+  author  = {Krattenthaler, C. and Rivoal, T. and Zudilin, W.},
+  title   = {S{\'e}ries hyperg{\'e}om{\'e}triques basiques, $q$-analogues des valeurs de la fonction z{\^e}ta et
+             s{\'e}ries d'{E}isenstein},
+  journal = {J. Inst. Math. Jussieu},
+  volume  = {5},
+  number  = {1},
+  year    = {2006},
+  pages   = {53--79},
+  note    = {arXiv:math/0311033},
+}
+
+% Pages 959--988 as in handoff/fibzeta/many/NOVELTY_2.md (2026-11-19).
+@article{JM10,
+  author  = {Jouhet, F. and Mosaki, E.},
+  title   = {Irrationalit{\'e} aux entiers impairs positifs d'un $q$-analogue de la fonction z{\^e}ta de {R}iemann},
+  journal = {Int. J. Number Theory},
+  volume  = {6},
+  year    = {2010},
+  pages   = {959--988},
+}
+
+% Pages and DOI 10.1007/s00208-009-0457-y from handoff/fibzeta/many/NOVELTY_2.md (2026-11-19).
+@article{FZ10,
+  author  = {Fischler, S. and Zudilin, W.},
+  title   = {A refinement of {N}esterenko's linear independence criterion with applications to zeta values},
+  journal = {Math. Ann.},
+  volume  = {347},
+  year    = {2010},
+  pages   = {739--763},
+}
+
+@article{Nes96,
+  author  = {Nesterenko, Yu. V.},
+  title   = {Modular functions and transcendence questions},
+  journal = {Sb. Math.},
+  volume  = {187},
+  number  = {9},
+  year    = {1996},
+  pages   = {1319--1348},
+}
+
+% Data from the reference list of Jouhet--Mosaki. Cited for the irrationality of zeta_q(1) = sum 1/(p^n - 1) at
+% q = 1/p, p >= 2 an integer, following JM's introduction (Borwein treats sum 1/(p^n + r), r rational).
+@article{Bor92,
+  author  = {Borwein, P.},
+  title   = {On the irrationality of certain series},
+  journal = {Math. Proc. Cambridge Philos. Soc.},
+  volume  = {112},
+  number  = {1},
+  year    = {1992},
+  pages   = {141--146},
+}
+
+@article{PVA07,
+  author  = {Postelmans, K. and Van Assche, W.},
+  title   = {Irrationality of $\zeta_q(1)$ and $\zeta_q(2)$},
+  journal = {J. Number Theory},
+  volume  = {126},
+  year    = {2007},
+  pages   = {119--154},
+}
+
+% Title, pages and DOI 10.3836/tjm/1244208475 from handoff/fibzeta/many/NOVELTY_2.md (zbMATH 1072.11051).
+@article{Tac04,
+  author  = {Tachiya, Y.},
+  title   = {Irrationality of certain {L}ambert series},
+  journal = {Tokyo J. Math.},
+  volume  = {27},
+  year    = {2004},
+  pages   = {75--85},
+}
+
+% Title, journal, volume and issue verified on the first page of the local copy; pages and DOI 10.4064/aa120-2-7
+% from handoff/fibzeta/many/NOVELTY_2.md.
+@article{BV05,
+  author  = {Bundschuh, P. and V{\"a}{\"a}n{\"a}nen, K.},
+  title   = {Linear independence of certain {L}ambert and allied series},
+  journal = {Acta Arith.},
+  volume  = {120},
+  number  = {2},
+  year    = {2005},
+  pages   = {197--209},
+}
+
+% Cited by KRZ06 (reference [11] there) for the number-field linear independence criterion.
+@misc{Jad96,
+  author  = {Jadot, C.},
+  title   = {Crit{\`e}res pour l'ind{\'e}pendance lin{\'e}aire et alg{\'e}brique},
+  note    = {Th{\`e}se de doctorat, Institut de Math{\'e}matiques de Jussieu},
+  year    = {1996},
+}
+
+% Sixth edition (2008). Theorem 330 is the asymptotic Phi(n) = 3n^2/pi^2 + O(n log n) (as cited in PROOF_T1.md,
+% Lemma 7); not re-checked against a physical copy.
+@book{HW08,
+  author    = {Hardy, G. H. and Wright, E. M.},
+  title     = {An Introduction to the Theory of Numbers},
+  edition   = {Sixth},
+  note      = {Revised by D. R. Heath-Brown and J. H. Silverman},
+  publisher = {Oxford University Press},
+  address   = {Oxford},
+  year      = {2008},
+}
+
+@misc{QZ3,
+  author  = {{Solomon Admasu}, Fikreab},
+  title   = {{QZeta3}: {L}ean 4 formalisation of the irrationality of $\zeta_{1/p}(3)$ (moving-denominator {H}ankel
+             argument)},
+  note    = {version 0.1.0, 2026-10-11, Apache License 2.0; directory \texttt{lean/} of \cite{UPL}},
+}
+
+@misc{UPL,
+  author  = {{uplift-universal-inc}},
+  title   = {Irrationality of the {L}ambert-series value $\zeta_{1/p}(3)$},
+  note    = {unrefereed AI-assisted research draft with Lean formalisation, version 0.3.0-two-proofs, 2026-10-12,
+             \url{https://github.com/uplift-universal-inc/qzeta_3-irrationality} (commit d12d56f)},
+}
+
+% Own work. Titles confirmed against the Hexagon API records (2026-11-19; both published 2026-11-15). The
+% hexagonmath.org/abs/<id>v1 form returns HTTP 200.
+@misc{Kri26a,
+  author       = {Krisman, S.},
+  title        = {The sum of the reciprocal cubes of the {F}ibonacci numbers is irrational},
+  howpublished = {Hexagon 2611.00473v1, \url{https://hexagonmath.org/abs/2611.00473v1}; Lean formalisation at
+                  \url{https://github.com/telaviv/fibonacci-zeta3-irrationality}},
+  year         = {2026},
+  note         = {Not peer reviewed; produced with substantial AI assistance, see its disclosure},
+}
+
+@misc{Kri26b,
+  author       = {Krisman, S.},
+  title        = {The reciprocal cube sums of {L}ucas sequences of quadratic units are irrational},
+  howpublished = {Hexagon 2611.00491v1, \url{https://hexagonmath.org/abs/2611.00491v1}; Lean formalisation at
+                  \url{https://github.com/telaviv/lucas-zeta3-irrationality}},
+  year         = {2026},
+  note         = {Not peer reviewed; produced with substantial AI assistance, see its disclosure},
+}
+
+% Concurrent work. Read through its .tex source by a subagent on 2026-11-19 (handoff/HEXAGON_TWINHETERODOX_2611.md);
+% the correctness of its proof is not checked by us. Hexagon API (2026-11-19): record created 2026-11-18 22:12 UTC,
+% published 2026-11-19 08:31 UTC; the abstract states the hypothesis quoted in the introduction.
+@misc{Twi26,
+  author       = {{twinheterodox}},
+  title        = {The weight-three {L}ambert sum at the golden ratio is irrational},
+  howpublished = {Hexagon 2611.00623v1, \url{https://hexagonmath.org/abs/2611.00623v1}},
+  year         = {2026},
+  note         = {Labelled by its author as primarily AI-generated; not formally verified; not peer reviewed},
+}
+
+% Concurrent work, same contributor. Hexagon record and abstract read 2026-11-19 (API); relation to zeta_{1/b}(3)
+% through its (1.1), as recorded in handoff/fibzeta/many/NOVELTY_2.md. Not checked by us.
+@misc{Twi26b,
+  author       = {{twinheterodox}},
+  title        = {The sum of the reciprocal {M}ersenne cubes is irrational},
+  howpublished = {Hexagon 2611.00643v1, \url{https://hexagonmath.org/abs/2611.00643v1}},
+  year         = {2026},
+  note         = {Labelled by its author as primarily AI-generated; not formally verified; not peer reviewed},
+}
+
+% Section 6 (open problems) read from the MSP copy; data from handoff/fibzeta/many/NOVELTY_2.md
+% (doi:10.7146/math.scand.a-15034).
+@article{BZ07,
+  author  = {Bundschuh, P. and Zudilin, W.},
+  title   = {Irrationality measures for certain $q$-mathematical constants},
+  journal = {Math. Scand.},
+  volume  = {101},
+  year    = {2007},
+  pages   = {104--122},
+}
+
+% The following five entries: data from handoff/fibzeta/many/NOVELTY_2.md (zbMATH / DOI as listed there).
+@article{BV05b,
+  author  = {Bundschuh, P. and V{\"a}{\"a}n{\"a}nen, K.},
+  title   = {Linear independence of $q$-analogues of certain classical constants},
+  journal = {Results Math.},
+  volume  = {47},
+  year    = {2005},
+  pages   = {33--44},
+}
+
+@article{Bun07,
+  author  = {Bundschuh, P.},
+  title   = {Linear independence of values of a certain {L}ambert series},
+  journal = {Results Math.},
+  volume  = {51},
+  year    = {2007},
+  pages   = {29--42},
+}
+
+@article{DKP24,
+  author  = {Dixit, A. B. and Kumar, V. and Pathak, S. S.},
+  title   = {Linear independence of values of the $q$-exponential and related functions},
+  journal = {Bull. Aust. Math. Soc.},
+  volume  = {109},
+  year    = {2024},
+  pages   = {453--463},
+}
+
+@article{Zud02,
+  author  = {Zudilin, W.},
+  title   = {Diophantine problems for $q$-zeta values},
+  journal = {Math. Notes},
+  volume  = {72},
+  year    = {2002},
+  pages   = {858--862},
+}
+
+@misc{Twi26c,
+  author       = {{twinheterodox}},
+  title        = {A height criterion for irrational weight-three {L}ambert sums},
+  howpublished = {Hexagon 2611.00638v1, \url{https://hexagonmath.org/abs/2611.00638v1}},
+  year         = {2026},
+  note         = {Labelled by its author as primarily AI-generated; not formally verified; not peer reviewed},
+}
+
+% Original source of the criterion. English translation data as in handoff/fibzeta/many/PROOF_T2.md (Moscow Univ.
+% Math. Bull. 40 (1985) 69--74); the precise statement used is FZ10, Theorem A.
+@article{Nes85,
+  author  = {Nesterenko, Yu. V.},
+  title   = {On the linear independence of numbers},
+  journal = {Moscow Univ. Math. Bull.},
+  volume  = {40},
+  number  = {1},
+  year    = {1985},
+  pages   = {69--74},
+}
+
+% Cited for Siegel's lemma over a number field (balancing between archimedean places), as in REFEREE_T2.md.
+@book{BG06,
+  author    = {Bombieri, E. and Gubler, W.},
+  title     = {Heights in {D}iophantine Geometry},
+  series    = {New Mathematical Monographs},
+  volume    = {4},
+  publisher = {Cambridge University Press},
+  address   = {Cambridge},
+  year      = {2006},
+}

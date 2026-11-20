@@ -1,0 +1,7 @@
+# lake env lean Axioms.lean, rerun 2026-11-19 (warm, 2m10s), at lean_qzeta3 HEAD ca3ef6a (Lean sources = 6318359)
+'QZeta3.irrational_sqrt_mul_zetaq3' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QZeta3.irrational_sub_inv_mul_zetaq3' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QZeta3.irrational_lucas_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QZeta3.irrational_fib_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QZeta3.summable_zetaq3' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QZeta3.summable_lucas' depends on axioms: [propext, Classical.choice, Quot.sound]
